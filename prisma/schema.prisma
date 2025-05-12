@@ -6,6 +6,10 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["seed"]
+  seed = {
+    run = "node prisma/seed.js"
+  }
 }
 
 datasource db {
