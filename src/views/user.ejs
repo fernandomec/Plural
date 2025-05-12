@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Plural</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+    <link rel="stylesheet" href="/css/user.css">
+</head>
+<body>
+    <%- include('partials/header', { user: user }) %>
+
+    <main class="main-content">
+        <div class="container-geral-perfil">
+            <section class="secao-perfil-visualizacao">
+                <div class="cabecalho-perfil">
+                    <img src="<%= user.profileImageUrl || '/imgs/account-icon.png' %>" alt="Imagem de Perfil" class="imagem-perfil">
+                    <h1 class="nome-perfil"><%= user.username %></h1>
+                    <p class="email-perfil"><%= user.email %></p>
+                </div>
+
+                <div class="info-perfil">
+                    <h2 class="titulo-secao-info">Minhas Informações</h2>
+                    <div class="linha-info">
+                        <span class="rotulo-info"><span class="material-symbols-outlined">call</span> Telefone:</span>
+                        <span class="valor-info"><%= user.tel || 'Não informado' %></span>
+                    </div>
+                    <div class="linha-info">
+                        <span class="rotulo-info"><span class="material-symbols-outlined">location_on</span> CEP:</span>
+                        <span class="valor-info"><%= user.cep || 'Não informado' %></span>
+                    </div>
+                    <div class="linha-info">
+                        <span class="rotulo-info"><span class="material-symbols-outlined">location_city</span> Bairro:</span>
+                        <span class="valor-info"><%= user.bairro || 'Não informado' %></span>
+                    </div>
+                    <div class="linha-info">
+                        <span class="rotulo-info"><span class="material-symbols-outlined">home</span> Endereço:</span>
+                        <span class="valor-info"><%= user.endereco || 'Não informado' %></span>
+                    </div>
+                    <div class="linha-info">
+                        <span class="rotulo-info"><span class="material-symbols-outlined">pin_drop</span> Complemento:</span>
+                        <span class="valor-info"><%= user.enderecoComplemento || 'Não informado' %></span>
+                    </div>
+                    <div class="linha-info">
+                        <span class="rotulo-info"><span class="material-symbols-outlined">calendar_today</span> Membro desde:</span>
+                        <span class="valor-info"><%= new Date(user.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) %></span>
+                    </div>
+                </div>
+
+                <div class="acoes-perfil">
+                    <a href="/user/edit" class="botao-acao botao-editar-perfil">
+                        <span class="material-symbols-outlined">edit</span> Editar Perfil
+                    </a>
+                    <a href="#" class="botao-acao botao-logout"  title="Sair" onclick="logout(); return false;">
+                        <span class="material-symbols-outlined">logout</span> Sair
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

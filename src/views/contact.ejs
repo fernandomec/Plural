@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Plural Representações</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/sobre_contact.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content">
+        <section class="secao-contato">
+            <div class="container-interno-contato">
+                <h1 class="titulo-pagina">Fale Conosco</h1>
+                <p class="subtitulo-contato">
+                    Estamos prontos para te atender! Escolha um dos canais abaixo para entrar em contato conosco.
+                </p>
+
+                <div class="opcoes-contato">
+                    <div class="opcao-contato-card">
+                        <span class="material-symbols-outlined icone-contato">call</span>
+                        <h2>Telefone</h2>
+                        <p>Ligue para nós e fale diretamente com nossa equipe.</p>
+                        <p class="numero-telefone-destaque">(71) 99681-6734</p>
+                        <a href="tel:+5571996816734" class="botao-contato botao-telefone">
+                            <span class="material-symbols-outlined">call</span>
+                            Ligar Agora
+                        </a>
+                    </div>
+
+                    <div class="opcao-contato-card">
+                        <span class="material-symbols-outlined icone-contato">chat</span>
+                        <h2>WhatsApp</h2>
+                        <p>Envie uma mensagem e retornaremos o mais breve possível.</p>
+                         <a href="#" id="whatsappLink" class="botao-contato botao-whatsapp" target="_blank">
+                            <span class="material-symbols-outlined">sms</span>
+                            Iniciar Conversa
+                        </a>
+                    </div>
+                </div>
+
+                <div class="info-adicional-contato">
+                    <h3>Horário de Atendimento</h3>
+                    <p>Segunda a Sexta: XX:XX - XX:XX</p>
+                    <p>Sábado: XX:XX - XX:XX (Apenas WhatsApp)</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/carrinho-icon') %>
+    <%- include('partials/help') %>
+    <%- include('partials/footer') %>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const whatsappLinkElement = document.getElementById('whatsappLink');
+            if (whatsappLinkElement) {
+                const user = JSON.parse('<%- JSON.stringify(user || null) %>');
+                const userName = user && user.username ? user.username : 'Cliente';
+                
+                const message = `Olá, Plural Representações! Me chamo ${userName} e gostaria de mais informações.`;
+                
+                const encodedMessage = encodeURIComponent(message);
+                const numeroWhatsapp = "5571996816734";
+                whatsappLinkElement.href = `https://api.whatsapp.com/send?phone=${numeroWhatsapp}&text=${encodedMessage}`;
+            }
+        });
+    </script>
+</body>
+</html>

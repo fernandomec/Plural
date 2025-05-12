@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+    <%- include('partials/header') %>
+    <h1 style="text-align: center;">Painel Administrativo</h1>
+    <div class="admin-container">
+        <!-- Empresa -->
+        <section class="admin-section">
+            <h2>Criar Empresa</h2>
+            <button onclick="fetchEmpresas()" class="list-button">Listar Empresas</button>
+            <div id="empresasList" class="json-display"></div>
+            
+            <form id="empresaForm" action="/admin/empresa" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="razaoSocial">Nome da Empresa</label>
+                    <input type="text" id="razaoSocial" name="razaoSocial" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="cnpj">CNPJ</label>
+                    <input type="text" id="cnpj" name="cnpj" required>
+                    <small class="cnpj-requirements">
+                        <div class="requirement invalid">• 14 números</div>
+                        <div class="requirement invalid">• Formato: XX.XXX.XXX/XXXX-XX</div>
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="telefone">Telefone</label>
+                    <input type="tel" id="telefone" name="telefone" required>
+                </div>
+                <div class="form-group">
+                    <label for="sobre">Sobre</label>
+                    <textarea id="sobre" name="sobre" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="bannerImagem">Ícone da Empresa</label>
+                    <input type="file" id="bannerImagem" name="bannerImagem" accept="image/*">
+                </div>
+                <button type="submit">Confirmar</button>
+            </form>
+        </section>
+
+        <!-- CRUD Categorias -->
+        <section class="admin-section">
+            <h2>CRUD de Categorias</h2>
+            <button onclick="fetchCategorias()" class="list-button">Listar Categorias</button>
+            <div id="categoriasList" class="json-display"></div>
+            
+            <form id="categoriaForm" action="/admin/categoria" method="POST">
+                <div class="form-group">
+                    <label for="empresaId">Empresa</label>
+                    <input type="text" list="empresas" id="empresaId" name="empresaId" required>
+                    <datalist id="empresas">
+                        <% empresas.forEach(empresa => { %>
+                            <option value="<%= empresa.id %>"><%= empresa.razaoSocial %></option>
+                        <% }); %>
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label for="categoryName">Nome da Categoria</label>
+                    <input type="text" id="categoryName" name="name" required>
+                </div>
+                <button type="submit">Confirmar</button>
+            </form>
+        </section>
+
+        <!-- CRUD Produtos -->
+        <section class="admin-section">
+            <h2>CRUD de Produtos</h2>
+            <button onclick="fetchProdutos()" class="list-button">Listar Produtos</button>
+            <div id="produtosList" class="json-display"></div>
+            
+            <form id="produtoForm" action="/admin/produto" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="produtoEmpresaId">Empresa</label>
+                    <input type="text" list="empresasProduto" id="produtoEmpresaId" name="empresaId" required>
+                    <datalist id="empresasProduto">
+                        <% empresas.forEach(empresa => { %>
+                            <option value="<%= empresa.id %>"><%= empresa.razaoSocial %></option>
+                        <% }); %>
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label for="productName">Nome do Produto</label>
+                    <input type="text" id="productName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="categoryId">Categoria da Empresa</label>
+                    <input type="text" list="categorias" id="categoryId" name="categoryId" required>
+                    <datalist id="categorias">
+                        <% categorias.forEach(categoria => { %>
+                            <option value="<%= categoria.id %>"><%= categoria.name %> (<%= empresas.find(e => e.id === categoria.empresaId)?.razaoSocial %>)</option>
+                        <% }); %>
+                    </datalist>
+                </div>
+                <div class="form-group">
+                    <label for="descricao">Descrição</label>
+                    <textarea id="descricao" name="descricao" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="preco">Preço</label>
+                    <input type="number" id="preco" name="preco" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="boolPromo" name="boolPromo">
+                        Tem promoção?
+                    </label>
+                </div>
+                <div class="form-group" id="descontoGroup" style="display: none;">
+                    <label for="desconto">Desconto (%)</label>
+                    <input type="number" id="desconto" name="desconto" min="0" max="99">
+                </div>
+                <div class="form-group">
+                    <label for="estoque">Estoque</label>
+                    <input type="number" id="estoque" name="estoque" required>
+                </div>
+                <div class="form-group">
+                    <label for="codBarra">Código de Barras</label>
+                    <input type="text" id="codBarra" name="codBarra">
+                </div>
+                <div class="form-group">
+                    <label for="produtoImagem">Imagem do Produto</label>
+                    <input type="file" id="produtoImagem" name="produtoImagem" accept="image/*">
+                </div>
+                <button type="submit">Confirmar</button>
+            </form>
+        </section>
+
+        <!-- Gerenciar Acessos -->
+        <section class="admin-section">
+            <h2>Gerenciar Acessos</h2>
+            <button onclick="fetchUsuarios()" class="list-button">Listar Usuários</button>
+            <div id="usuariosList" class="json-display"></div>
+            
+            <div class="form-group">
+                <input type="email" id="searchEmail" placeholder="Pesquisar por email">
+                <button onclick="searchUser()">Buscar</button>
+            </div>
+            <div id="userSearchResult"></div>
+            
+            <form id="roleForm" action="/admin/update-role" method="POST" style="display: none;">
+                <input type="hidden" id="userId" name="userId">
+                <div class="form-group">
+                    <label for="role">Nova Role</label>
+                    <input type="text" list="roles" id="role" name="role" required>
+                    <datalist id="roles">
+                        <option value="ADMIN">
+                        <option value="EDITOR">
+                        <option value="USER">
+                    </datalist>
+                </div>
+                <button type="submit">Confirmar</button>
+            </form>
+        </section>
+    </div>
+
+    <%- include('partials/footer') %>
+    <script>
+        function showSuccess(message) {
+            alert(message);
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/cnpj-validation.js"></script>
+</body>
+</html>

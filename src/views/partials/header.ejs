@@ -1,0 +1,94 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+
+<header class="cabecalho-principal">
+    <nav class="navegacao-principal">
+        <div class="grupo-logo-menu">
+            <button class="botao-menu-sidebar" id="botaoAbrirSidebar" aria-label="Abrir menu lateral" aria-expanded="false" aria-controls="barraLateral">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <a href="/" class="logo">Plural</a>
+        </div>
+        <div class="links-navegacao-desktop">
+            <a href="/">Home</a>
+            <a href="/lojas">Lojas</a>
+            <a href="/contact">Contato</a>
+            <% if (!user) { %>
+                <a href="/login">Login</a>
+            <% } else { %>
+                <a href="/user">Perfil</a>
+                <% if (user.role === 'ADMIN') { %>
+                    <a href="/admin">Admin</a>
+                <% } %>
+                <a href="#" class="link-logout" title="Sair" onclick="logout(); return false;">
+                    <span class="material-symbols-outlined icone-logout">logout</span>
+                    <span class="texto-logout">Sair</span>
+                </a>
+            <% } %>
+        </div>
+    </nav>
+</header>
+
+<div id="barraLateral" class="barra-lateral" aria-hidden="true">
+    <div class="cabecalho-barra-lateral">
+        <a href="/" class="logo-sidebar">Plural</a>
+        <button class="botao-fechar-sidebar" id="botaoFecharSidebar" aria-label="Fechar menu lateral">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    <div class="conteudo-barra-lateral">
+        <a href="/">Home</a>
+        <a href="/lojas">Lojas</a>
+        <a href="/contact">Contato</a>
+        <% if (!user) { %>
+            <a href="/login">Login</a>
+        <% } else { %>
+            <a href="/user">Perfil</a>
+            <% if (user.role === 'ADMIN') { %>
+                <a href="/admin">Admin</a>
+            <% } %>
+            <a href="#" class="link-logout-sidebar" title="Sair" onclick="logout(); return false;">
+                <span class="material-symbols-outlined">logout</span> Sair
+            </a>
+        <% } %>
+    </div>
+</div>
+<div class="overlay-sidebar" id="overlaySidebar"></div>
+
+<script src="/js/authRequests.js"></script>
+<script>
+    const barraLateral = document.getElementById('barraLateral');
+    const botaoAbrirSidebar = document.getElementById('botaoAbrirSidebar');
+    const botaoFecharSidebar = document.getElementById('botaoFecharSidebar');
+    const overlaySidebar = document.getElementById('overlaySidebar');
+    const corpoDocumento = document.body;
+
+    function abrirSidebar() {
+        if (barraLateral && botaoAbrirSidebar && overlaySidebar) {
+            barraLateral.classList.add('aberta');
+            overlaySidebar.classList.add('ativo');
+            botaoAbrirSidebar.setAttribute('aria-expanded', 'true');
+            barraLateral.setAttribute('aria-hidden', 'false');
+            corpoDocumento.classList.add('sidebar-aberta-no-scroll');
+        }
+    }
+
+    function fecharSidebar() {
+        if (barraLateral && botaoAbrirSidebar && overlaySidebar) {
+            barraLateral.classList.remove('aberta');
+            overlaySidebar.classList.remove('ativo');
+            botaoAbrirSidebar.setAttribute('aria-expanded', 'false');
+            barraLateral.setAttribute('aria-hidden', 'true');
+            corpoDocumento.classList.remove('sidebar-aberta-no-scroll');
+        }
+    }
+
+    if (botaoAbrirSidebar) {
+        botaoAbrirSidebar.addEventListener('click', abrirSidebar);
+    }
+    if (botaoFecharSidebar) {
+        botaoFecharSidebar.addEventListener('click', fecharSidebar);
+    }
+    if (overlaySidebar) {
+        overlaySidebar.addEventListener('click', fecharSidebar);
+    }
+</script>

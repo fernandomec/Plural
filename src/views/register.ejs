@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/login_register.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    
+
+    <a href="/" class="back-button">Voltar</a>
+
+    <div class="login-container">
+        <h1>Criar Conta</h1>
+        <p class="subtitle">Use seu e-mail para se registrar</p>
+
+        <form id="registerForm" action="/register" method="POST">
+            <div class="form-group">
+                <label for="username">Nome Completo</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <div class="password-input-container">
+                    <input type="password" id="password" name="password" required>
+                    <span class="material-symbols-outlined toggle-password" user-select: none></span>
+                </div>
+                <small class="password-requirements">
+                    <div class="requirement invalid">A senha deve conter: 8-20 caracteres</div>
+                    <div class="requirement invalid">• Pelo menos 1 número</div>
+                    <div class="requirement invalid">• Pelo menos 1 caractere especial (!, @, #, $, %, ^, &, *)</div>
+                </small>
+            </div>
+            
+            <button type="submit">Registrar</button>
+        </form>
+
+        <p class="register-link">Já possui conta? <a href="/login">Faça login</a></p>
+        
+        <!-- Divs para mensagens -->
+        <div id="errorMessage" class="message error hidden"></div>
+        <div id="successMessage" class="message success hidden"></div>
+    </div>
+    
+    
+    <script src="/js/password-validation.js"></script>
+    <script src="/js/password-toggle.js"></script>
+    <script src="/js/authRequests.js"></script>
+    <script src="/js/registerForm.js"></script>
+</body>
+</html>

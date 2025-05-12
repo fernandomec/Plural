@@ -1,0 +1,227 @@
+/* /css/home.css */
+
+.hero-section-geral {
+    padding: 60px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.container-interno {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+#hero-apresentacao {
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+#hero-apresentacao .container-interno {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    text-align: left;
+}
+
+#hero-apresentacao .hero-imagem {
+    flex: 0 0 300px;
+    max-width: 300px;
+}
+
+#hero-apresentacao .hero-imagem img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+#hero-apresentacao .hero-mensagem h2 {
+    font-size: 2.5em;
+    color: #0b1863;
+    margin-bottom: 20px;
+}
+
+#hero-apresentacao .hero-mensagem p {
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+#hero-apresentacao .hero-mensagem strong {
+    color: #3148a4;
+}
+
+#hero-plataforma {
+    background: linear-gradient(135deg, #0b1863 0%, #3148a4 50%, #5a7cc8 100%);
+    color: white;
+    min-height: 70vh;
+}
+
+#hero-plataforma .container-interno {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+#hero-plataforma .plataforma-intro h1 {
+    font-size: 3.5em;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+#hero-plataforma .plataforma-intro p {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 18px 35px;
+    background-color: #ffffff;
+    color: #0b1863;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.cta-button:hover, .cta-button:focus {
+    transform: translateY(-3px) scale(1.03);
+    background-color: #f0f0f0;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    outline: none;
+}
+
+.features-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.feature-item {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 30px;
+    border-radius: 10px;
+    max-width: 320px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 1;
+    min-width: 250px;
+}
+
+.feature-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.feature-item .material-symbols-outlined {
+    font-size: 3.5em;
+    color: #ffffff;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.feature-item h3 {
+    font-size: 1.6em;
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+.feature-item p {
+    font-size: 1em;
+    line-height: 1.5;
+    opacity: 0.85;
+}
+
+@media (max-width: 992px) {
+    #hero-apresentacao .container-interno {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    #hero-apresentacao .hero-imagem {
+        margin-bottom: 30px;
+        max-width: 80%;
+        flex-basis: auto;
+    }
+
+    #hero-apresentacao .hero-mensagem {
+        text-align: center;
+    }
+
+    #hero-apresentacao .hero-mensagem h2 {
+        font-size: 2em;
+    }
+
+    #hero-plataforma .plataforma-intro h1 {
+        font-size: 2.8em;
+    }
+    #hero-plataforma .plataforma-intro p {
+        font-size: 1.2em;
+    }
+    .cta-button {
+        padding: 15px 30px;
+        font-size: 1em;
+    }
+
+    .feature-item {
+        max-width: 45%;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-section-geral {
+        padding: 40px 15px;
+    }
+
+    #hero-apresentacao .hero-imagem {
+        max-width: 250px;
+    }
+
+    #hero-apresentacao .hero-mensagem h2 {
+        font-size: 1.8em;
+    }
+    #hero-apresentacao .hero-mensagem p {
+        font-size: 1em;
+    }
+
+    #hero-plataforma .plataforma-intro h1 {
+        font-size: 2.2em;
+    }
+    #hero-plataforma .plataforma-intro p {
+        font-size: 1.1em;
+    }
+    .cta-button {
+        padding: 12px 25px;
+    }
+
+    .features-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    .feature-item {
+        max-width: 90%;
+        width: 100%;
+    }
+
+    .feature-item h3 {
+        font-size: 1.4em;
+    }
+    .feature-item .material-symbols-outlined {
+        font-size: 3em;
+    }
+}

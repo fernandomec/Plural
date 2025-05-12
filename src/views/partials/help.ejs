@@ -1,0 +1,219 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+
+<style>
+    .container-botao-ajuda {
+        position: fixed;
+        left: 25px;
+        bottom: 25px;
+        z-index: 1040;
+    }
+
+    .botao-ajuda-principal {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background-color: #0b1863;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        font-size: 1em;
+        font-weight: 500;
+    }
+
+    .botao-ajuda-principal:hover {
+        background-color: #1f3a8a;
+        transform: translateY(-2px) scale(1.05);
+    }
+
+    .botao-ajuda-principal .material-symbols-outlined {
+        font-size: 1.3em;
+        user-select: none;
+    }
+
+    .menu-ajuda {
+        display: none;
+        position: absolute;
+        bottom: calc(100% + 12px);
+        left: 0;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        padding: 20px;
+        min-width: 260px;
+        border: 1px solid #e0e0e0;
+        z-index: 1;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+    }
+
+    .menu-ajuda.visivel {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .botao-fechar-menu {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        line-height: 1;
+    }
+
+    .botao-fechar-menu .material-symbols-outlined {
+        font-size: 22px;
+        color: #6c757d;
+        user-select: none;
+        transition: color 0.2s ease;
+    }
+    .botao-fechar-menu:hover .material-symbols-outlined {
+        color: #343a40;
+    }
+
+    .menu-ajuda h2 {
+        margin: 0 0 18px 0;
+        font-size: 1.25em;
+        color: #1f2f77;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    .lista-opcoes-ajuda {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .lista-opcoes-ajuda li {
+        margin-bottom: 8px;
+    }
+    .lista-opcoes-ajuda li:last-child {
+        margin-bottom: 0;
+    }
+
+    .item-menu-ajuda {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 12px;
+        text-align: left;
+        cursor: pointer;
+        color: #343a40;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        font-size: 0.95em;
+    }
+
+    .item-menu-ajuda:hover {
+        background-color: #f0f4f8;
+        color: #0b1863;
+    }
+
+    .item-menu-ajuda .material-symbols-outlined {
+        font-size: 1.3em;
+        color: #0b1863;
+    }
+
+    @media (max-width: 480px) {
+        .container-botao-ajuda {
+            left: 15px;
+            bottom: 15px;
+        }
+        .botao-ajuda-principal {
+            padding: 10px 15px;
+            font-size: 0.9em;
+        }
+        .menu-ajuda {
+            min-width: calc(100vw - 30px);
+            max-width: 300px;
+            bottom: calc(100% + 8px);
+            padding: 15px;
+        }
+        .menu-ajuda h2 {
+            font-size: 1.15em;
+        }
+        .item-menu-ajuda {
+            padding: 9px 10px;
+            font-size: 0.9em;
+        }
+    }
+</style>
+
+<div class="container-botao-ajuda">
+    <button class="botao-ajuda-principal" id="botaoAjudaPrincipal" aria-expanded="false" aria-controls="menuAjuda">
+        <span class="material-symbols-outlined">help_outline</span>
+        Ajuda
+    </button>
+    <div class="menu-ajuda" id="menuAjuda" role="dialog" aria-labelledby="tituloMenuAjuda">
+        <button class="botao-fechar-menu" id="botaoFecharMenuAjuda" aria-label="Fechar menu de ajuda">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <h2 id="tituloMenuAjuda">Como podemos ajudar?</h2>
+        <ul class="lista-opcoes-ajuda">
+            <% if (user) { %>
+                <li>
+                    <a href="/status-pedido" class="item-menu-ajuda">
+                        <span class="material-symbols-outlined">local_shipping</span>
+                        Status do pedido
+                    </a>
+                </li>
+            <% } %>
+            <li>
+                <a href="/contact" class="item-menu-ajuda">
+                    <span class="material-symbols-outlined">support_agent</span>
+                    Falar com a empresa
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const botaoAjudaPrincipal = document.getElementById('botaoAjudaPrincipal');
+    const menuAjuda = document.getElementById('menuAjuda');
+    const botaoFecharMenuAjuda = document.getElementById('botaoFecharMenuAjuda');
+
+    if (botaoAjudaPrincipal && menuAjuda) {
+        botaoAjudaPrincipal.addEventListener('click', function (event) {
+            event.stopPropagation();
+            const isVisible = menuAjuda.classList.toggle('visivel');
+            botaoAjudaPrincipal.setAttribute('aria-expanded', isVisible);
+        });
+    }
+
+    if (botaoFecharMenuAjuda && menuAjuda) {
+        botaoFecharMenuAjuda.addEventListener('click', function (event) {
+            event.stopPropagation();
+            menuAjuda.classList.remove('visivel');
+            if(botaoAjudaPrincipal) botaoAjudaPrincipal.setAttribute('aria-expanded', 'false');
+        });
+    }
+
+    document.addEventListener('click', function (event) {
+        if (menuAjuda && menuAjuda.classList.contains('visivel')) {
+            if (!menuAjuda.contains(event.target) && !botaoAjudaPrincipal.contains(event.target)) {
+                menuAjuda.classList.remove('visivel');
+                if(botaoAjudaPrincipal) botaoAjudaPrincipal.setAttribute('aria-expanded', 'false');
+            }
+        }
+    });
+
+    if (menuAjuda) {
+        menuAjuda.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    }
+});
+</script>

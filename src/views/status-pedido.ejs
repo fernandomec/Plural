@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status dos Pedidos - Plural</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/status-pedido.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="status-pedido-container">
+        <h1>Meus Pedidos</h1>
+
+        <% if (pedidos && pedidos.length > 0) { %>
+            <% pedidos.forEach(pedido => { %>
+                <div class="pedido-card">
+                    <div class="pedido-header">
+                        <div>
+                            <span class="pedido-id">Pedido #<%= pedido.id %></span>
+                            <span class="pedido-data">Data: <%= new Date(pedido.createdAt).toLocaleDateString('pt-BR') %></span>
+                        </div>
+                        <span class="pedido-total">Total: R$ <%= pedido.totalAmount.toFixed(2) %></span>
+                    </div>
+                    <div class="pedido-status">
+                        Status: <strong class="status-<%= pedido.status.toLowerCase() %>">
+                            <%= pedido.status.replace(/_/g, ' ') %>
+                        </strong>
+                         <p class="pedido-payment-method">Pagamento: <%= pedido.paymentMethod %></p>
+                         <p class="pedido-empresa">Vendido e entregue por: <%= pedido.empresa.razaoSocial %></p>
+                    </div>
+                    <div class="pedido-items">
+                        <h4>Itens do Pedido:</h4>
+                        <ul>
+                            <% pedido.orderItems.forEach(item => { %>
+                                <li>
+                                    <div class="item-details">
+                                        <% if (item.product.images && item.product.images[0]) { %>
+                                            <img src="<%= item.product.images[0].endereco %>" alt="<%= item.productName %>" class="item-image-small">
+                                        <% } else { %>
+                                            <img src="/uploads/produtos/placeholder-img.png" alt="Placeholder" class="item-image-small">
+                                        <% } %>
+                                        <span><%= item.productName %> (Qtd: <%= item.quantity %>) - R$ <%= item.productPrice.toFixed(2) %></span>
+                                    </div>
+                                </li>
+                            <% }) %>
+                        </ul>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>Você ainda não fez nenhum pedido.</p>
+            <a href="/lojas" class="btn">Explorar Lojas</a>
+        <% } %>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

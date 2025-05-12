@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= produto.name %> - <%= produto.empresa.razaoSocial %></title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/produto.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="produto-container">
+        <nav class="breadcrumb">
+            <a href="/lojas">Lojas</a> &gt;
+            <a href="/lojas/<%= produto.empresaId %>"><%= produto.empresa.razaoSocial %></a> &gt;
+            <span><%= produto.name %></span>
+        </nav>
+
+        <div class="produto-detalhes">
+            <div class="produto-imagens">
+                <div class="imagem-principal">
+                    <% if (produto.images && produto.images[0]) { %>
+                        <img src="<%= produto.images[0].endereco %>" alt="<%= produto.name %>">
+                    <% } else { %>
+                        <img src="/uploads/produtos/placeholder-img.png" alt="Placeholder">
+                    <% } %>
+                </div>
+            </div>
+
+            <div class="produto-info">
+                <h1><%= produto.name %></h1>
+                <p class="categoria">Categoria: <%= produto.category.name %></p>
+                <p class="descricao"><%= produto.descricao %></p>
+                
+                <div class="preco-container">
+                    <% if (produto.boolPromo && produto.desconto) { %>
+                        <div class="desconto-tag">-<%= produto.desconto %>%</div>
+                        <span class="preco-original">R$ <%= produto.preco.toFixed(2) %></span>
+                        <span class="preco-final">
+                            R$ <%= (produto.preco * (1 - produto.desconto/100)).toFixed(2) %>
+                        </span>
+                    <% } else { %>
+                        <span class="preco-final">R$ <%= produto.preco.toFixed(2) %></span>
+                    <% } %>
+                </div>
+
+                <button class="add-to-cart-btn" onclick="addToCart(<%= produto.id %>)">
+                    <span class="material-symbols-outlined">add_shopping_cart</span>
+                    Adicionar ao Carrinho
+                </button>
+            </div>
+        </div>
+
+        <% if (produtosRelacionados.length > 0) { %>
+            <section class="produtos-relacionados">
+                <h2>Produtos Relacionados da Mesma Categoria</h2>
+                <div class="relacionados-grid">
+                    <% produtosRelacionados.forEach(relacionado => { %>
+                        <a href="/lojas/<%= relacionado.empresaId %>/produto/<%= relacionado.id %>" class="card-produto">
+                            <div class="container-imagem-produto">
+                                <% if (relacionado.images && relacionado.images[0]) { %>
+                                    <img src="<%= relacionado.images[0].endereco %>" alt="<%= relacionado.name %>">
+                                <% } else { %>
+                                    <img src="/uploads/produtos/placeholder-img.png" alt="Placeholder">
+                                <% } %>
+                            </div>
+                            <div class="info-produto">
+                                <h4><%= relacionado.name %></h4>
+                                <div class="produto-preco">
+                                    <% if (relacionado.boolPromo && relacionado.desconto) { %>
+                                        <span class="preco-original">R$ <%= relacionado.preco.toFixed(2) %></span>
+                                        <span class="preco-promocional">
+                                            R$ <%= (relacionado.preco * (1 - relacionado.desconto/100)).toFixed(2) %>
+                                        </span>
+                                    <% } else { %>
+                                        <span>R$ <%= relacionado.preco.toFixed(2) %></span>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </a>
+                    <% }) %>
+                </div>
+            </section>
+        <% } %>
+    </main>
+
+    <%- include('partials/carrinho-icon') %>
+    <%- include('partials/help') %>
+    <%- include('partials/footer') %>
+    
+    <script src="/js/carrinho-icon.js"></script>
+</body>
+</html>
+</div></span></div>

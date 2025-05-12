@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Plural Representações</title>
+    <link rel="shortcut icon" href="/imgs/logo plural shortcut.png">
+    <link rel="stylesheet" href="/css/style.css"> <link rel="stylesheet" href="/css/header.css"> <link rel="stylesheet" href="/css/footer.css"> <link rel="stylesheet" href="/css/home.css">   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="home-main">
+        <section id="hero-apresentacao" class="hero-section-geral">
+            <div class="container-interno">
+                <div class="hero-imagem">
+                    <img src="/imgs/logo plural.jpeg" alt="Logo Plural Representações">
+                </div>
+                <div class="hero-mensagem">
+                    <h2>Sobre a Plural Representações</h2>
+                    <p>
+                        A <strong>Plural Representações</strong> é especializada em <strong>Representação Comercial</strong>, com forte atuação nos segmentos de <strong>Festas, Embalagens e Confeitaria</strong>. Ao longo dos anos, construímos uma reputação sólida, unindo qualidade, parceria e foco nas reais necessidades de nossos clientes.
+                    </p>
+                    <p>
+                        Valorizamos <strong>relacionamentos duradouros e transparentes</strong>, com atendimento próximo, suporte técnico e soluções sob medida. Seja você um pequeno empreendedor ou uma grande rede varejista, conte com a Plural para representar as <strong>melhores marcas do mercado</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="hero-plataforma" class="hero-section-geral">
+            <div class="container-interno">
+                <div class="plataforma-intro">
+                    <h1>Bem-vindo(a) à Plural</h1>
+                    <a href="/lojas" class="cta-button">Explorar Lojas</a>
+                </div>
+
+                <div class="features-wrapper">
+                    <div class="feature-item">
+                        <span class="material-symbols-outlined">store</span>
+                        <h3>Múltiplas Lojas</h3>
+                        <p>Acesse diversas lojas e marcas parceiras em um único lugar.</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="material-symbols-outlined">local_shipping</span>
+                        <h3>Logística Eficiente</h3>
+                        <p>Conte com nossa experiência para otimizar suas compras e entregas.</p>
+                    </div>
+                    <div class="feature-item">
+                        <span class="material-symbols-outlined">verified_user</span>
+                        <h3>Compra Segura</h3>
+                        <p>Suas transações e dados protegidos do início ao fim.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('partials/carrinho-icon') %>
+    <%- include('partials/help') %>
+    <%- include('partials/footer') %>
+</body>
+</html>

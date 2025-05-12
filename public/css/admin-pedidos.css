@@ -1,0 +1,90 @@
+.admin-pedidos-container {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.admin-pedidos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.admin-pedidos-table th,
+.admin-pedidos-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.admin-pedidos-table th {
+    background-color: #f2f2f2;
+    font-weight: 600;
+}
+
+.admin-pedidos-table tr:hover {
+    background-color: #f5f5f5;
+}
+
+.admin-pedidos-table ul {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.status-select {
+    width: 100%;
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.action-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.action-button:hover {
+    background-color: #45a049;
+}
+
+.search-button {
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.search-button:hover {
+    background-color: #0b7dda;
+}
+
+.error-message {
+    color: #d32f2f;
+    font-weight: 500;
+    margin: 10px 0;
+}
+
+.success-message {
+    color: #388e3c;
+    font-weight: 500;
+    margin: 10px 0;
+}
+
+#idPesquisaPedido {
+    padding: 8px;
+    width: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+}

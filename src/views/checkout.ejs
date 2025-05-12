@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Compra - Plural</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/checkout.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="checkout-container">
+        <h1>Finalizar Compra</h1>
+
+        <div class="checkout-content">
+            <section class="order-summary">
+                <h2>Resumo do Pedido</h2>
+                <% if (carrinhoItems && carrinhoItems.length > 0) { %>
+                    <ul>
+                        <% carrinhoItems.forEach(item => { %>
+                            <% 
+                                let precoUnitario = item.product.preco;
+                                if (item.product.boolPromo && item.product.desconto) {
+                                    precoUnitario = precoUnitario * (1 - item.product.desconto / 100);
+                                }
+                                let totalItem = item.quantidade * precoUnitario;
+                            %>
+                            <li>
+                                <div class="item-info">
+                                    <% if (item.product.images && item.product.images[0]) { %>
+                                        <img src="<%= item.product.images[0].endereco %>" alt="<%= item.product.name %>" class="item-image">
+                                    <% } else { %>
+                                        <img src="/uploads/produtos/placeholder-img.png" alt="Placeholder" class="item-image">
+                                    <% } %>
+                                    <div>
+                                        <span class="item-name"><%= item.product.name %></span>
+                                        <span class="item-quantity">Quantidade: <%= item.quantidade %></span>
+                                        <span class="item-price">Preço Unitário: R$ <%= precoUnitario.toFixed(2) %></span>
+                                    </div>
+                                </div>
+                                <span class="item-total">R$ <%= totalItem.toFixed(2) %></span>
+                            </li>
+                        <% }) %>
+                    </ul>
+                    <div class="summary-total">
+                        <strong>Total: R$ <%= subtotal.toFixed(2) %></strong>
+                    </div>
+                <% } else { %>
+                    <p>Seu carrinho está vazio.</p>
+                    <a href="/lojas" class="btn">Continuar Comprando</a>
+                <% } %>
+            </section>
+
+            <% if (carrinhoItems && carrinhoItems.length > 0) { %>
+            <section class="payment-section">
+                <h2>Forma de Pagamento (Fictício)</h2>
+                <form action="/checkout/confirm" method="POST" id="checkoutForm">
+                     <% if (typeof csrfToken !== 'undefined' && csrfToken) { %>
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <% } %>
+                    <input type="hidden" name="empresaIdHidden" value="<%= empresaId %>">
+
+
+                    <div class="payment-options">
+                        <label>
+                            <input type="radio" name="paymentMethod" value="Pix Fictício" checked>
+                            Pix (Fictício)
+                        </label>
+                        <p class="payment-info">Ao confirmar, seu pedido será registrado como pago via Pix (simulação).</p>
+                        
+                        <label>
+                            <input type="radio" name="paymentMethod" value="Boleto Fictício">
+                            Boleto (Fictício)
+                        </label>
+                        <p class="payment-info">Ao confirmar, seu pedido será registrado como pago via Boleto (simulação).</p>
+                    </div>
+                    
+                    <!-- Adicionar campos de endereço se necessário -->
+                    <!-- 
+                    <h3>Endereço de Entrega</h3>
+                    <p>Verifique seu endereço em <a href="/user-edit">seu perfil</a>.</p>
+                    <p>Endereço atual: <%= user.endereco || 'Não cadastrado' %></p> 
+                    -->
+
+                    <button type="submit" class="btn btn-confirm">Confirmar Pagamento e Pedido</button>
+                </form>
+            </section>
+            <% } %>
+        </div>
+    </main>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,311 @@
+.secao-contato {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: calc(100vh - 160px);
+    padding: 50px 20px;
+    background: linear-gradient(160deg, 
+        #0b1863 0%, 
+        #1f3a8a 40%, 
+        #5a7cc8 100%
+    );
+    color: white;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.container-interno-contato {
+    max-width: 900px;
+    width: 100%;
+}
+
+.titulo-pagina {
+    font-size: 2.8em;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.subtitulo-contato {
+    font-size: 1.2em;
+    margin-bottom: 40px;
+    opacity: 0.9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.opcoes-contato {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.opcao-contato-card {
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 30px 25px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.opcao-contato-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.icone-contato {
+    font-size: 3.5em;
+    color: #ffffff;
+    margin-bottom: 15px;
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 15px;
+    border-radius: 50%;
+    line-height: 1;
+}
+
+.opcao-contato-card h2 {
+    font-size: 1.8em;
+    color: white;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.opcao-contato-card p {
+    font-size: 1em;
+    opacity: 0.85;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    min-height: 3em;
+}
+.numero-telefone-destaque {
+    font-size: 1.4em !important;
+    font-weight: bold;
+    color: #f0f0f0;
+    margin-bottom: 20px !important;
+    min-height: auto !important;
+}
+
+.botao-contato {
+    padding: 14px 28px;
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 30px;
+    border: 2px solid white;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.15);
+    transition: all 0.25s ease;
+    font-size: 1em;
+    text-align: center;
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 200px;
+    justify-content: center;
+}
+
+.botao-contato .material-symbols-outlined {
+    font-size: 1.3em;
+}
+
+.botao-whatsapp {
+    background-color: #25D366;
+    border-color: #25D366;
+}
+.botao-whatsapp:hover {
+    background-color: #1DAE54;
+    border-color: #1DAE54;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.botao-telefone {
+    background-color: #0b1863;
+    border-color: #0b1863;
+}
+.botao-telefone:hover {
+    background-color: #1f3a8a;
+    border-color: #1f3a8a;
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.botao-contato:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.info-adicional-contato {
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+}
+
+.info-adicional-contato h3 {
+    font-size: 1.3em;
+    color: #f0f0f0;
+    margin-bottom: 10px;
+}
+
+.info-adicional-contato p {
+    font-size: 1em;
+    opacity: 0.8;
+    line-height: 1.6;
+    margin-bottom: 5px;
+}
+.page-content {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #f4f6f9;
+    border-radius: 8px;
+}
+
+.about-section .page-title { 
+    color: #1f2f77;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.about-section {
+    line-height: 1.7;
+    color: #343a40;
+    background-color: white;
+    padding: 30px 35px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.about-section h2 {
+    color: #0b1863;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.6em;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 8px;
+}
+
+.about-section p {
+    margin-bottom: 18px;
+    font-size: 1.05em;
+}
+
+.about-section ul {
+    margin-left: 25px;
+    margin-bottom: 20px;
+    list-style: square;
+}
+.about-section ul li {
+    margin-bottom: 8px;
+}
+
+.team-members {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin-top: 35px;
+    gap: 20px;
+}
+
+.team-member {
+    width: 220px;
+    margin-bottom: 25px;
+    text-align: center;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+.team-member:hover {
+    transform: translateY(-5px);
+}
+
+.team-member img {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+    border: 4px solid #5a7cc8;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.team-member h3 {
+    font-size: 1.2em;
+    color: #0b1863;
+    margin-bottom: 5px;
+}
+.team-member p {
+    font-size: 0.9em;
+    color: #555;
+}
+
+@media (max-width: 768px) {
+    .secao-contato {
+        padding: 40px 15px;
+        min-height: auto;
+    }
+    .titulo-pagina {
+        font-size: 2.2em;
+    }
+    .subtitulo-contato {
+        font-size: 1.1em;
+        margin-bottom: 30px;
+    }
+    .opcoes-contato {
+        flex-direction: column;
+        align-items: center;
+        gap: 25px;
+    }
+    .opcao-contato-card {
+        max-width: 100%;
+        padding: 25px 20px;
+    }
+    .icone-contato {
+        font-size: 3em;
+    }
+    .opcao-contato-card h2 {
+        font-size: 1.6em;
+    }
+    .numero-telefone-destaque {
+        font-size: 1.2em !important;
+    }
+    .botao-contato {
+        padding: 12px 24px;
+        font-size: 0.95em;
+        min-width: 180px;
+    }
+    .info-adicional-contato {
+        margin-top: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .titulo-pagina {
+        font-size: 1.9em;
+    }
+    .subtitulo-contato {
+        font-size: 1em;
+    }
+    .opcao-contato-card p {
+        font-size: 0.95em;
+    }
+}

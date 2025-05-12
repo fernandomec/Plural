@@ -1,0 +1,257 @@
+.cabecalho-principal {
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 0.8rem 1.5rem;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box;
+}
+
+.navegacao-principal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.grupo-logo-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo {
+    background: linear-gradient(to right, #1f2f77, #0b1863);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 28px;
+    font-weight: 900;
+    font-family: "Boldonse", system-ui;
+    text-decoration: none;
+    line-height: 1;
+}
+
+.botao-menu-sidebar {
+    display: none;
+    background: none;
+    border: none;
+    color: #1f2f77;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+.botao-menu-sidebar:hover {
+    color: #0b1863;
+}
+.botao-menu-sidebar .material-symbols-outlined {
+    display: block;
+    font-size: inherit;
+}
+
+.links-navegacao-desktop {
+    display: flex;
+    gap: 1.8rem;
+    align-items: center;
+}
+
+.links-navegacao-desktop a {
+    color: #1f2f77;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease, transform 0.2s ease;
+    font-size: 1.05em;
+    padding: 5px 0;
+    position: relative;
+}
+
+.links-navegacao-desktop a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #0b1863;
+    transition: width 0.3s ease;
+}
+
+.links-navegacao-desktop a:hover::after {
+    width: 100%;
+}
+
+.links-navegacao-desktop a:hover {
+    color: #0b1863;
+    transform: translateY(-1px);
+}
+
+.link-logout {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #c0392b !important;
+    font-weight: 500;
+}
+.link-logout:hover {
+    color: #a93226 !important;
+}
+.link-logout .icone-logout {
+    font-size: 1.2em;
+    user-select: none;
+}
+
+.barra-lateral {
+    height: 100%;
+    width: 280px;
+    position: fixed;
+    top: 0;
+    left: -280px;
+    background-color: #ffffff;
+    overflow-x: hidden;
+    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1030;
+    padding: 0;
+    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+}
+.barra-lateral.aberta {
+    left: 0;
+}
+
+.cabecalho-barra-lateral {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.logo-sidebar {
+    background: linear-gradient(to right, #1f2f77, #0b1863);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 24px;
+    font-weight: 900;
+    font-family: "Boldonse", system-ui;
+    text-decoration: none;
+}
+
+.botao-fechar-sidebar {
+    background: none;
+    border: none;
+    color: #333;
+    font-size: 26px;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+}
+.botao-fechar-sidebar:hover {
+    color: #0b1863;
+}
+.botao-fechar-sidebar .material-symbols-outlined {
+    display: block;
+    font-size: inherit;
+}
+
+.conteudo-barra-lateral {
+    padding: 1.5rem;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.conteudo-barra-lateral a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    color: #333;
+    text-decoration: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
+    font-size: 1.1em;
+    border-radius: 4px;
+}
+
+.conteudo-barra-lateral a:hover {
+    color: #0b1863;
+    background-color: #f0f4f8;
+    padding-left: 10px;
+}
+
+.link-logout-sidebar {
+    color: #c0392b !important;
+}
+.link-logout-sidebar:hover {
+    color: #a93226 !important;
+    background-color: rgba(192, 57, 43, 0.1) !important;
+}
+.conteudo-barra-lateral a .material-symbols-outlined {
+    font-size: 1.4em;
+    color: #1f2f77;
+}
+.link-logout-sidebar .material-symbols-outlined {
+    color: #c0392b !important;
+}
+
+.overlay-sidebar {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1020;
+    transition: opacity 0.35s ease;
+    opacity: 0;
+}
+.overlay-sidebar.ativo {
+    display: block;
+    opacity: 1;
+}
+
+.sidebar-aberta-no-scroll {
+    overflow: hidden;
+}
+
+@media (max-width: 991px) {
+    .links-navegacao-desktop {
+        display: none;
+    }
+    .botao-menu-sidebar {
+        display: flex;
+    }
+    .navegacao-principal {
+        padding: 0.8rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .barra-lateral {
+        width: 85%;
+        left: -85%;
+    }
+    .logo {
+        font-size: 24px;
+    }
+    .cabecalho-barra-lateral {
+        padding: 0.8rem 1rem;
+    }
+    .logo-sidebar {
+        font-size: 22px;
+    }
+    .conteudo-barra-lateral {
+        padding: 1rem;
+    }
+    .conteudo-barra-lateral a {
+        font-size: 1em;
+        padding: 10px 0;
+    }
+}

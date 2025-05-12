@@ -1,0 +1,315 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Boldonse", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    background: linear-gradient(135deg, #0b1863 0%, #1f3a8a 50%, #3148a4 100%);
+    color: #333;
+}
+
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 18px;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #0b1863;
+    border: none;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.back-button::before {
+    content: "arrow_back";
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+}
+
+.login-container {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    width: 100%;
+    max-width: 420px;
+    padding: 35px 40px;
+    overflow: hidden;
+}
+
+.login-container h1 {
+    color: #1f2f77;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: "Boldonse", system-ui;
+}
+
+.subtitle {
+    color: #555;
+    font-size: 15px;
+    margin-bottom: 30px;
+    text-align: center;
+    line-height: 1.5;
+    font-family: system-ui, sans-serif;
+}
+
+.form-group {
+    margin-bottom: 22px;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #444;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: system-ui, sans-serif;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f6f8fa;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: system-ui, sans-serif;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #0b1863;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(11, 24, 99, 0.15);
+    outline: none;
+}
+
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-container input[type="password"],
+.password-input-container input[type="text"] {
+    padding-right: 45px;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+    color: #777;
+    font-size: 22px;
+}
+.toggle-password:hover {
+    color: #0b1863;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-bottom: 25px;
+    margin-top: -10px;
+}
+
+.forgot-password a {
+    color: #0b1863;
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: 500;
+    font-family: system-ui, sans-serif;
+}
+
+.forgot-password a:hover {
+    text-decoration: underline;
+    color: #1f3a8a;
+}
+
+form button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: #0b1863;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-family: system-ui, sans-serif;
+}
+
+form button[type="submit"]:hover {
+    background-color: #1f3a8a;
+    transform: translateY(-2px);
+}
+
+.register-link {
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+    font-family: system-ui, sans-serif;
+}
+
+.register-link a {
+    color: #0b1863;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+    color: #1f3a8a;
+}
+
+.message {
+    padding: 12px 15px;
+    margin-top: 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+    font-family: system-ui, sans-serif;
+}
+
+.message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message.success {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+.hidden {
+    display: none;
+}
+
+.password-requirements {
+    font-size: 12px;
+    color: #666;
+    margin-top: 8px;
+    padding-left: 5px;
+    font-family: system-ui, sans-serif;
+}
+
+.requirement {
+    transition: color 0.3s ease;
+    margin: 3px 0;
+    display: flex;
+    align-items: center;
+    font-size: 0.95em;
+}
+
+.requirement::before {
+    content: '•';
+    margin-right: 6px;
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+.requirement.valid {
+    color: #198754;
+}
+.requirement.valid::before {
+    content: '✓';
+    color: #198754;
+}
+
+.requirement.invalid {
+    color: #dc3545;
+}
+.requirement.invalid::before {
+    content: 'X';
+    color: #dc3545;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 25px 20px;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+    
+    .login-container h1 {
+        font-size: 22px;
+    }
+    
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    form button[type="submit"] {
+        padding: 12px;
+        font-size: 15px;
+    }
+
+    .back-button {
+        top: 15px;
+        left: 15px;
+        font-size: 13px;
+        padding: 8px 14px;
+    }
+    .back-button::before {
+        font-size: 18px;
+    }
+
+    label {
+        font-size: 13px;
+    }
+    .subtitle, .forgot-password a, .register-link {
+        font-size: 13px;
+    }
+}

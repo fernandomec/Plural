@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Editor</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <div style="padding: 20px;">
+        <h1>Painel do Editor</h1>
+        <p>Bem-vindo, <%= user.username %> (<%= user.role %>)</p>
+        
+        <div class="editor-content">
+            <h2>Gerenciamento de Conteúdo</h2>
+            <!-- Adicione aqui o conteúdo do painel editor -->
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/login_register.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    <a href="/" class="back-button">Voltar</a>
+
+    <div class="login-container">
+        <h1>Iniciar Sessão</h1>
+        <p class="subtitle">Use seu e-mail e senha.</p>
+
+        <form id="loginForm" action="/login" method="POST">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-input-container">
+                    <input type="password" id="password" name="password" required>
+                    <span class="material-symbols-outlined toggle-password" user-select: none></span>
+                </div>
+            </div>
+            
+            <div class="forgot-password">
+                <a href="/forgot-password">Esqueceu sua senha?</a>
+            </div>
+            
+            <button type="submit">Entrar</button>
+        </form>
+
+
+        <p class="register-link">Não possui conta? <a href="/register">Registre-se</a></p>
+        <!-- divs para mensagens -->
+        <div id="errorMessage" class="message error hidden"></div>
+        <div id="successMessage" class="message success hidden"></div>
+    </div>
+
+    <script src="/js/loginForm.js"></script>
+    <script src="/js/password-toggle.js"></script>
+    <script src="/js/authRequests.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= empresa.nomeFantasia || empresa.razaoSocial %> - Plural</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/lojasId.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content pagina-loja-individual">
+
+        <section class="secao-hero-loja" <% if (empresa.bannerImagem && empresa.bannerImagem.endereco) { %> style="background-image: url('<%= empresa.bannerImagem.endereco %>');" <% } %>>
+            <div class="container-interno overlay-hero-loja">
+                <% if (empresa.logoImagem && empresa.logoImagem.endereco) { %>
+                    <img src="<%= empresa.logoImagem.endereco %>" alt="Logo <%= empresa.nomeFantasia || empresa.razaoSocial %>" class="logo-loja-hero">
+                <% } %>
+                <h1><%= empresa.nomeFantasia || empresa.razaoSocial %></h1>
+                <% if (empresa.slogan) { %>
+                    <p class="slogan-loja"><%= empresa.slogan %></p>
+                <% } %>
+            </div>
+        </section>
+
+        <div class="container-loja-detalhes">
+            <div class="container-interno">
+                <% if (empresa.sobre) { %>
+                <section class="secao-sobre-loja">
+                    <h2>Sobre Nós</h2>
+                    <p class="empresa-sobre"><%- empresa.sobre.replace(/\n/g, '<br>') %></p>
+                </section>
+                <% } %>
+
+                <section class="secao-produtos-da-loja">
+                    <h2>Nossos Produtos</h2>
+                    <div class="filtro-categorias">
+                        <button class="botao-filtro active" data-category="all">Todos</button>
+                        <% if (empresa.categorias && empresa.categorias.length > 0) { %>
+                        <div class="dropdown-categorias">
+                            <button class="botao-dropdown-toggle">
+                                Filtrar por Categoria
+                                <span class="material-symbols-outlined">arrow_drop_down</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <% empresa.categorias.forEach(categoria => { %>
+                                    <button class="botao-filtro" data-category="<%= categoria.id %>">
+                                        <%= categoria.name %>
+                                    </button>
+                                <% }) %>
+                            </div>
+                        </div>
+                        <% } %>
+                    </div>
+
+                    <div class="grade-produtos">
+                        <% if (products && products.length > 0) { %>
+                            <% products.forEach(product => { %>
+                                <div class="card-produto" data-category="<%= product.categoryId %>">
+                                    <a href="/lojas/<%= empresa.id %>/produto/<%= product.id %>" class="link-card-produto-inteiro">
+                                        <div class="imagem-produto-container">
+                                            <% if (product.images && product.images[0] && product.images[0].endereco) { %>
+                                                <img src="<%= product.images[0].endereco %>" alt="<%= product.name %>">
+                                            <% } else { %>
+                                                <img src="/uploads/produtos/placeholder-img.png" alt="Placeholder">
+                                            <% } %>
+                                            <% if (product.boolPromo && product.desconto) { %>
+                                                <span class="tag-promocao"><%= product.desconto %>% OFF</span>
+                                            <% } %>
+                                        </div>
+                                        <div class="info-produto">
+                                            <h3><%= product.name %></h3>
+                                            <div class="preco-produto">
+                                                <% if (product.boolPromo && product.desconto && product.preco) { %>
+                                                    <span class="preco-original">R$ <%= Number(product.preco).toFixed(2).replace('.', ',') %></span>
+                                                    <span class="preco-com-desconto">
+                                                        R$ <%= (Number(product.preco) * (1 - Number(product.desconto)/100)).toFixed(2).replace('.', ',') %>
+                                                    </span>
+                                                <% } else if (product.preco) { %>
+                                                    <span>R$ <%= Number(product.preco).toFixed(2).replace('.', ',') %></span>
+                                                <% } else { %>
+                                                     <span>Preço indisponível</span>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <button class="botao-adicionar-carrinho" onclick="addToCart('<%= product.id %>')">
+                                        <span class="material-symbols-outlined">add_shopping_cart</span>
+                                        Adicionar
+                                    </button>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="nenhum-produto-encontrado">Nenhum produto encontrado nesta loja ou categoria.</p>
+                        <% } %>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <%- include('partials/help') %>
+    <%- include('partials/carrinho-icon') %>
+    <%- include('partials/footer') %>
+    
+    <script src="/js/carrinho-icon.js"></script>
+    <script src="/js/category-filter.js"></script>
+    
+</body>
+</html>

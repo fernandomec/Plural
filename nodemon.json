@@ -1,0 +1,14 @@
+{
+    "watch": [
+      "src",
+      "views",
+      "public"
+    ],
+    "ext": "js,ejs,html,css,json,env",
+    "ignore": [
+      "node_modules/",
+      ".git/"
+    ],
+    "verbose": true,
+    "legacyWatch": true
+  }

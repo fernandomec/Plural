@@ -1,0 +1,464 @@
+body.pagina-usuario {
+    font-family: Arial, sans-serif;
+}
+
+.main-content {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+}
+
+.profile-container {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.profile-container .profile-image {
+    display: block;
+    width: 65px;
+    height: 65px;
+    margin: 0 auto 0.8rem auto;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-container .profile-name {
+    text-align: center;
+    font-size: 1.5em;
+    color: #1f2f77;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+.profile-container .profile-info {
+    margin-bottom: 1.2rem;
+}
+
+.profile-container .info-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    font-size: 0.9em;
+}
+
+.profile-container .info-label {
+    width: 150px;
+    font-weight: 500;
+    color: #333;
+    padding-right: 8px;
+    flex-shrink: 0;
+    margin-bottom: 4px;
+}
+
+.profile-container .info-row > span:not(.info-label):not(.material-symbols-outlined) {
+    color: #555;
+    word-break: break-all;
+    flex-basis: 100%;
+}
+.profile-container .info-row > input,
+.profile-container .info-row > .password-input-container {
+    flex-grow: 1;
+    min-width: 180px;
+}
+
+
+.profile-container .info-row input[type="text"],
+.profile-container .info-row input[type="tel"],
+.profile-container .info-row input[type="password"],
+.profile-container .info-row input[type="email"] {
+    width: 100%;
+    padding: 7px 9px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 0.95em;
+    box-sizing: border-box;
+}
+.profile-container .info-row input:focus {
+    border-color: #0b1863;
+    box-shadow: 0 0 0 2px rgba(11, 24, 99, 0.2);
+    outline: none;
+}
+
+.profile-container .edit-icon {
+    font-size: 1.1em;
+    color: #888;
+    margin-left: 6px;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+.profile-container .password-input-container {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+.profile-container .password-input-container input[type="password"],
+.profile-container .password-input-container input[type="text"] {
+    padding-right: 35px;
+}
+
+.profile-container .toggle-password-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #777;
+    user-select: none;
+    font-size: 1.3em;
+}
+.profile-container .toggle-password-icon:hover {
+    color: #0b1863;
+}
+
+.profile-container small.form-text-info {
+    display: block;
+    font-size: 0.75em;
+    color: #666;
+    margin-top: 2px;
+    margin-bottom: 6px;
+    width: 100%;
+    padding-left: calc(150px + 8px);
+    box-sizing: border-box;
+}
+.profile-container .info-row > small.password-requirements,
+.profile-container .info-row > small.cep-requirements {
+    padding-left: 0;
+    margin-top: 4px;
+    flex-basis: 100%;
+}
+
+.profile-container .password-requirements,
+.profile-container .cep-requirements {
+    font-size: 0.75em;
+    color: #666;
+    margin-top: 4px;
+    display: block;
+}
+
+.profile-container .requirement {
+    transition: color 0.3s ease;
+    margin: 1px 0;
+    padding-left: 8px;
+    position: relative;
+    font-size: 0.95em;
+}
+.profile-container .requirement::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    font-size: 0.85em;
+}
+
+.profile-container .requirement.valid {
+    color: #28a745;
+}
+.profile-container .requirement.valid::before {
+    content: "✓";
+    color: #28a745;
+}
+.profile-container .requirement.invalid {
+    color: #dc3545;
+}
+.profile-container .requirement.invalid::before {
+    content: "✗";
+    color: #dc3545;
+}
+
+.profile-container .password-confirm {
+    margin-top: 1.2rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid #f0f0f0;
+}
+.profile-container .password-confirm .info-label {
+    color: #c0392b;
+    font-weight: bold;
+}
+
+.form-actions {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-container .edit-button,
+.profile-container .back-button {
+    display: block;
+    width: 100%;
+    padding: 9px 15px;
+    background: #0b1863;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.profile-container .edit-button:hover,
+.profile-container .back-button:hover {
+    background: #1f3a8a;
+    transform: translateY(-1px);
+}
+
+.profile-container .back-button {
+    background-color: #6c757d;
+}
+.profile-container .back-button:hover {
+    background-color: #5a6268;
+}
+
+
+.mensagem-feedback {
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    text-align: center;
+    border: 1px solid transparent;
+}
+.erro-feedback {
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+.sucesso-feedback {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+
+@media (min-width: 500px) {
+    .form-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+    .profile-container .edit-button,
+    .profile-container .back-button {
+        width: auto;
+        min-width: 150px;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .profile-container {
+        margin: 1rem 10px;
+        padding: 1.2rem;
+    }
+    .profile-container .info-row {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 0.8rem;
+    }
+    .profile-container .info-label {
+        width: 100%;
+        margin-bottom: 4px;
+        padding-right: 0;
+    }
+    .profile-container .info-row input[type="text"],
+    .profile-container .info-row input[type="tel"],
+    .profile-container .info-row input[type="password"],
+    .profile-container .info-row input[type="email"],
+    .profile-container .password-input-container {
+        width: 100%;
+    }
+    .profile-container small.form-text-info {
+        padding-left: 0;
+    }
+    .profile-container .edit-icon {
+        display: none;
+    }
+}
+
+@media (max-width: 400px) {
+    .profile-container {
+        padding: 1rem;
+    }
+    .profile-container .profile-name {
+        font-size: 1.3em;
+    }
+    .profile-container .edit-button,
+    .profile-container .back-button {
+        font-size: 0.9em;
+        padding: 8px 10px;
+    }
+    .profile-container .info-row input[type="text"],
+    .profile-container .info-row input[type="tel"],
+    .profile-container .info-row input[type="password"],
+    .profile-container .info-row input[type="email"] {
+        font-size: 0.85em;
+    }
+}
+
+.container-geral-perfil {
+    max-width: 750px;
+    margin: 30px auto 40px auto;
+    padding: 30px 35px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    border: 1px solid #e0e0e0;
+}
+
+
+.secao-perfil-visualizacao .cabecalho-perfil {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eeeeee;
+}
+
+.secao-perfil-visualizacao .imagem-perfil {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.secao-perfil-visualizacao .nome-perfil {
+    font-size: 2em;
+    color: #1f2f77;
+    margin: 0 0 5px 0;
+    font-weight: 600;
+}
+
+.secao-perfil-visualizacao .email-perfil {
+    font-size: 1.1em;
+    color: #555;
+    margin: 0;
+}
+
+.secao-perfil-visualizacao .info-perfil {
+    margin-top: 20px;
+}
+
+.titulo-secao-info {
+    font-size: 1.4em;
+    color: #333;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea;
+    text-align: left;
+    font-weight: 500;
+}
+
+.secao-perfil-visualizacao .linha-info {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 1.05em;
+}
+.secao-perfil-visualizacao .linha-info:last-child {
+    border-bottom: none;
+}
+
+.secao-perfil-visualizacao .rotulo-info {
+    width: 200px;
+    font-weight: 500;
+    color: #444;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.secao-perfil-visualizacao .rotulo-info .material-symbols-outlined {
+    font-size: 1.3em;
+    color: #0b1863;
+}
+
+.secao-perfil-visualizacao .valor-info {
+    flex: 1;
+    color: #555;
+    word-break: break-word;
+}
+
+.acoes-perfil {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 1px solid #eeeeee;
+}
+
+.botao-acao {
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: none;
+}
+.botao-acao .material-symbols-outlined {
+    font-size: 1.3em;
+}
+
+.botao-editar-perfil {
+    background-color: #0b1863;
+    color: white;
+}
+.botao-editar-perfil:hover {
+    background-color: #1f3a8a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.botao-logout {
+    background-color: #6c757d;
+    color: white;
+}
+.botao-logout:hover {
+    background-color: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+
+@media (max-width: 768px) {
+    .secao-perfil-visualizacao .rotulo-info {
+        width: 150px;
+        font-size: 0.95em;
+    }
+    .secao-perfil-visualizacao .valor-info {
+        font-size: 0.95em;
+    }
+     .acoes-perfil {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .botao-acao {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .secao-perfil-visualizacao .linha-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        padding: 10px 0;
+    }
+    .secao-perfil-visualizacao .rotulo-info {
+        width: auto;
+        margin-bottom: 3px;
+    }
+}

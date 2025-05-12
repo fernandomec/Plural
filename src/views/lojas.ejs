@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lojas Parceiras - Plural</title>
+    <link rel="shortcut icon" href="/imgs/logo plural shortcut.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/lojas.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <main class="main-content pagina-lojas">
+
+        <section class="secao-hero-lojas">
+            <div class="container-interno">
+                <h1>Nossas Lojas Parceiras</h1>
+                <p>Explore uma variedade de produtos das melhores lojas do segmento.</p>
+            </div>
+        </section>
+
+        <section class="secao-categorias">
+            <div class="container-interno">
+                <% if (empresas && empresas.length > 0) { %>
+                    <div class="grid-categorias">
+                        <% empresas.forEach(empresa => { %>
+                            <a class="card-categoria" href="/lojas/<%= empresa.id %>">
+                                <div class="banner-categoria">
+                                    <% if (empresa.bannerImagem && empresa.bannerImagem.endereco) { %>
+                                        <img src="<%= empresa.bannerImagem.endereco %>" alt="Banner <%= empresa.razaoSocial %>">
+                                    <% } else { %>
+                                        <img src="/uploads/empresas/placeholder-img.png" alt="Placeholder">
+                                    <% } %>
+                                </div>
+                                <h3><%= empresa.razaoSocial %></h3>
+                            </a>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <p class="nenhuma-empresa">Nenhuma categoria de loja cadastrada no momento.</p>
+                <% } %>
+            </div>
+        </section>
+
+        <% if (empresas && empresas.length > 0) { %>
+            <% empresas.forEach(empresa => { %>
+                <section class="secao-produtos-loja">
+                    <div class="container-interno">
+                        <div class="cabecalho-loja">
+                            <h2><%= empresa.razaoSocial %></h2>
+                            <a href="/lojas/<%= empresa.id %>" class="botao-ver-mais-loja">
+                                Ver mais produtos
+                                <span class="material-symbols-outlined">arrow_forward</span>
+                            </a>
+                        </div>
+                        <% if (empresa.products && empresa.products.length > 0) { %>
+                            <div class="grid-produtos">
+                                <% empresa.products.slice(0, 10).forEach(product => { %>
+                                    <a href="/lojas/<%= empresa.id %>/produto/<%= product.id %>" class="card-produto">
+                                        <div class="container-imagem-produto">
+                                            <% if (product.images && product.images[0]) { %>
+                                                <img src="<%= product.images[0].endereco %>" alt="<%= product.name %>">
+                                            <% } else { %>
+                                                <img src="/uploads/produtos/placeholder-img.png" alt="Placeholder">
+                                            <% } %>
+                                            <% if (product.boolPromo && product.desconto) { %>
+                                                <span class="tag-promocao"><%= product.desconto %>% OFF</span>
+                                            <% } %>
+                                        </div>
+                                        <div class="info-produto">
+                                            <h4><%= product.name %></h4>
+                                            <div class="produto-preco">
+                                                <% if (product.boolPromo && product.desconto && product.preco) { %>
+                                                    <span class="preco-original">R$ <%= Number(product.preco).toFixed(2).replace('.', ',') %></span>
+                                                    <span class="preco-promocional">
+                                                        R$ <%= (Number(product.preco) * (1 - Number(product.desconto)/100)).toFixed(2).replace('.', ',') %>
+                                                    </span>
+                                                <% } else if (product.preco) { %>
+                                                    <span>R$ <%= Number(product.preco).toFixed(2).replace('.', ',') %></span>
+                                                <% } else { %>
+                                                    <span>Preço indisponível</span>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </a>
+                                <% }) %>
+                            </div>
+                        <% } else { %>
+                            <p class="nenhum-produto">Nenhum produto disponível.</p>
+                        <% } %>
+                    </div>
+                </section>
+            <% }) %>
+        <% } %>
+    </main>
+
+    <%- include('partials/carrinho-icon') %>
+    <%- include('partials/help') %>
+    <%- include('partials/footer') %>
+
+    <script src="/js/carrinho-icon.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+</body>
+</html>

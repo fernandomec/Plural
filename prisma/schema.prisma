@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  EDITOR
+  ADMIN
+}
+
+enum OrderStatus {
+  PEDIDO_RECEBIDO
+  PAGAMENTO_APROVADO
+  EM_SEPARACAO
+  ENVIADO_TRANSPORTADORA
+  EM_TRANSPORTE
+  EM_ROTA_DE_ENTREGA
+  ENTREGUE
+  TROCA_DEVOLUCAO_SOLICITADA // Optional
+  TROCA_DEVOLUCAO_CONCLUIDA // Optional
+}
+
+model User {
+  id                  Int            @id @default(autoincrement())
+  email               String         @unique
+  username            String         @db.VarChar(30)
+  password            String         @db.Text
+  tel                 String?        @db.VarChar(20)
+  cep                 String?        @db.VarChar(9)
+  bairro              String?        @db.Text
+  endereco            String?        @db.Text
+  enderecoComplemento String?        @db.Text
+  pastPassword        PastPassword[]
+  role                Role           @default(USER)
+  createdAt           DateTime       @default(now())
+  carrinho            Carrinho[]
+  products            Product[]
+  pedidos             Pedido[] // Added relation to Pedido
+}
+
+model Empresa {
+  id            Int        @id @default(autoincrement())
+  razaoSocial   String
+  email         String         @unique
+  password      String         @db.VarChar(255)
+  cnpj          String     @unique
+  telefone      String
+  sobre         String     @db.Text
+  bannerImagem  Imagem?    @relation("EmpresaBanner", fields: [bannerId], references: [id])
+  bannerId      Int?       @unique
+  categorias    Category[]
+  products      Product[]
+  pastPassword  PastPassword[]
+  createdAt     DateTime   @default(now())
+  pedidos       Pedido[] // Added relation to Pedido (if orders are per-empresa directly, or through OrderItem)
+}
+
+model Category {
+  id        Int       @id @default(autoincrement())
+  name      String
+  empresa   Empresa   @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+  empresaId Int
+  products  Product[]
+  createdAt DateTime  @default(now())
+
+  @@unique([name, empresaId])
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  descricao   String
+  preco       Float
+  boolPromo   Boolean  @default(false)
+  desconto    Int?
+  estoque     Int
+  codBarra    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  //relacionamentos
+  empresa     Empresa  @relation(fields: [empresaId], references: [id], onDelete: Cascade)
+  empresaId   Int
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  Int
+  images      Imagem[]
+  createdBy   User     @relation(fields: [userId], references: [id])
+  userId      Int
+  carrinho    Carrinho[]
+  orderItems  OrderItem[] // Added relation to OrderItem
+}
+
+model Carrinho {
+  id         Int      @id @default(autoincrement())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int
+  product    Product  @relation(fields: [productId], references: [id])
+  productId  Int
+  quantidade Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
+
+  @@unique([userId, productId])
+}
+
+model Imagem {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  endereco  String
+  createdAt DateTime @default(now())
+  
+  //relacionamentos
+  product   Product? @relation(fields: [productId], references: [id])
+  productId Int?
+  empresa   Empresa? @relation("EmpresaBanner")
+}
+
+model PastPassword {
+  id        Int      @id @default(autoincrement())
+  password  String   @db.Text
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  empresa   Empresa? @relation(fields: [empresaId], references: [id])
+  empresaId Int?
+  createdAt DateTime
+}
+
+model Pedido {
+  id            Int           @id @default(autoincrement())
+  user          User          @relation(fields: [userId], references: [id])
+  userId        Int
+  empresa       Empresa       @relation(fields: [empresaId], references: [id]) // Assuming one order is for one empresa
+  empresaId     Int
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  totalAmount   Float
+  status        OrderStatus   @default(PEDIDO_RECEBIDO)
+  paymentMethod String // e.g., "Pix Fictício", "Boleto Fictício"
+  orderItems    OrderItem[]
+  shippingAddress String? // Could be a JSON or separate model if complex
+}
+
+model OrderItem {
+  id            Int      @id @default(autoincrement())
+  pedido        Pedido   @relation(fields: [pedidoId], references: [id])
+  pedidoId      Int
+  product       Product  @relation(fields: [productId], references: [id])
+  productId     Int
+  productName   String   // Name at the time of purchase
+  productPrice  Float    // Price at the time of purchase
+  quantity      Int
+  empresaId     Int      // To track which store this item belongs to, redundant if Pedido has empresaId
+  empresaName   String   // Store name at the time of purchase
+}

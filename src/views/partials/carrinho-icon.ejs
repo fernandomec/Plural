@@ -1,0 +1,99 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+<style>
+    .carrinho-botao-container {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    z-index: 1050;
+    }
+
+    .botao-carrinho-flutuante {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        background-color: #0b1863;
+        border-radius: 50%;
+        color: white;
+        text-decoration: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        position: relative;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .botao-carrinho-flutuante:hover {
+        background-color: #1f3a8a;
+        transform: scale(1.1);
+    }
+
+    .contador-carrinho {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #e41e31;
+        color: white;
+        font-size: 11px;
+        min-width: 22px;
+        height: 22px;
+        padding: 0 4px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        pointer-events: none;
+        border: 2px solid white;
+        box-sizing: border-box;
+    }
+
+    .botao-carrinho-flutuante .material-symbols-outlined {
+        font-size: 26px;
+        color: white;
+        user-select: none;
+    }
+
+    .botao-carrinho-flutuante.item-adicionado-animacao {
+        animation: pulse-carrinho 0.5s ease-out;
+    }
+
+    @keyframes pulse-carrinho {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.2); }
+        100% { transform: scale(1); }
+    }
+
+    .notificacao-toast-carrinho {
+        position: fixed;
+        bottom: 95px;
+        right: 25px;
+        background-color: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 6px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        z-index: 1100;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        font-size: 0.95em;
+        pointer-events: none;
+    }
+
+    .notificacao-toast-carrinho.visivel {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .notificacao-toast-carrinho.erro {
+        background-color: #dc3545;
+    }
+</style>
+
+<div class="carrinho-botao-container">
+    <a href="/carrinho" class="botao-carrinho-flutuante" id="botaoCarrinhoFlutuante">
+        <div class="contador-carrinho" id="contadorCarrinho"><%= locals.totalItemsCarrinho || 0 %></div>
+        <span class="material-symbols-outlined">shopping_cart</span>
+    </a>
+</div>
+
+<div id="notificacaoToastCarrinho" class="notificacao-toast-carrinho"></div>
