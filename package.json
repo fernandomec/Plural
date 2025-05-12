@@ -7,7 +7,8 @@
     "dev": "nodemon src/app.js",
     "prisma:migrate-dev": "npx prisma migrate dev",
     "prisma:generate": "npx prisma generate",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed": "node prisma/seed.js"
   },
   "keywords": [],
   "author": "CodeSis",
