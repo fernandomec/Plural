@@ -1,38 +1,69 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
-const { users: usersData } = require('./users');
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Iniciando o seed...'); // Adicione este log
   try {
-    for (let userData of usersData) {
-      const hashedPassword = await bcrypt.hash(userData.password, 10);
-      const user = await prisma.user.create({
-        data: {
-          name: userData.name,
-          email: userData.email,
-          password: hashedPassword,
-          role: userData.role.toUpperCase(),
-          username: userData.username,
-        },
-      });
-      console.log('Usuário criado:', user); // Adicione este log
-    }
-    console.log('Seed concluído com sucesso!'); // Adicione este log
-  } catch (error) {
-    console.error('Erro durante o seed:', error); // Log do erro
+    // Tentar adicionar usando Prisma Client (upsert)
+    const adminPassword = await bcrypt.hash('admin123', 10);
+    const editorPassword = await bcrypt.hash('editor456', 10);
+
+    const adminUser = await prisma.user.upsert({
+      where: { email: 'admin@example.com' },
+      update: {},
+      create: {
+        email: 'admin@example.com',
+        username: 'admin',
+        password: adminPassword,
+        role: 'ADMIN',
+        name: 'Administrador',
+      },
+    });
+
+    const editorUser = await prisma.user.upsert({
+      where: { email: 'editor@example.com' },
+      update: {},
+      create: {
+        email: 'editor@example.com',
+        username: 'editor',
+        password: editorPassword,
+        role: 'EDITOR',
+        name: 'Editor User',
+      },
+    });
+
+    console.log({ adminUser, editorUser });
+  } catch (errorPrisma) {
+    console.error('Erro ao adicionar usuários com Prisma:', errorPrisma);
+    console.log('Tentando adicionar usuários com SQL bruto...');
+    await rawSql();
+  } finally {
+    await prisma.$disconnect();
   }
 }
 
-main()
-  .catch((e) => {
-    console.error('Erro global no seed:', e); // Log do erro global
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+async function rawSql() {
+  try {
+    const adminPassword = await bcrypt.hash('admin123', 10);
+    const editorPassword = await bcrypt.hash('editor456', 10);
 
-module.exports = main;
+    const resultAdmin = await prisma.$executeRaw`
+      INSERT INTO "User" (email, username, password, role, name)
+      VALUES ('admin@example.com', 'admin', ${adminPassword}, 'ADMIN', 'Administrador')
+      ON CONFLICT (email) DO NOTHING;
+    `;
+    console.log({ resultAdmin });
+
+    const resultEditor = await prisma.$executeRaw`
+      INSERT INTO "User" (email, username, password, role, name)
+      VALUES ('editor@example.com', 'editor', ${editorPassword}, 'EDITOR', 'Editor User')
+      ON CONFLICT (email) DO NOTHING;
+    `;
+    console.log({ resultEditor });
+  } catch (errorRawSql) {
+    console.error('Erro ao adicionar usuários com SQL bruto:', errorRawSql);
+  }
+}
+
+main();

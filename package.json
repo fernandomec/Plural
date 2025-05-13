@@ -2,13 +2,15 @@
   "name": "plural-representacoes",
   "version": "1.0.0",
   "main": "src/app.js",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "prisma:migrate-dev": "npx prisma migrate dev",
     "prisma:generate": "npx prisma generate",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "seed": "node prisma/seed.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "CodeSis",
