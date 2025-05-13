@@ -17,7 +17,6 @@ async function main() {
         username: 'admin',
         password: adminPassword,
         role: 'ADMIN',
-        name: 'Administrador',
       },
     });
 
@@ -29,7 +28,6 @@ async function main() {
         username: 'editor',
         password: editorPassword,
         role: 'EDITOR',
-        name: 'Editor User',
       },
     });
 
@@ -101,14 +99,14 @@ async function rawSql() {
     const empresaPassword = await bcrypt.hash('artlatex123', 10);
 
     await prisma.$executeRaw`
-      INSERT INTO "User" (email, username, password, role, name)
-      VALUES ('admin@example.com', 'admin', ${adminPassword}, 'ADMIN', 'Administrador')
+      INSERT INTO "User" (email, username, password, role)
+      VALUES ('admin@example.com', 'admin', ${adminPassword}, 'ADMIN')
       ON CONFLICT (email) DO NOTHING;
     `;
 
     await prisma.$executeRaw`
-      INSERT INTO "User" (email, username, password, role, name)
-      VALUES ('editor@example.com', 'editor', ${editorPassword}, 'EDITOR', 'Editor User')
+      INSERT INTO "User" (email, username, password, role)
+      VALUES ('editor@example.com', 'editor', ${editorPassword}, 'EDITOR')
       ON CONFLICT (email) DO NOTHING;
     `;
 
