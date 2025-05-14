@@ -1,0 +1,171 @@
+<main class="main-content">
+    <header class="content-header">
+        <div class="breadcrumb">
+            <span><a href="/admin">Admin</a> / </span><span class="current">Categorias</span>
+        </div>
+    </header>
+
+    <section class="content-actions">
+        <div class="title-section">
+            <h1>Categorias</h1>
+            <p class="category-count"><%= totalCategorias %> categorias</p>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary" onclick="window.location.href='/admin/categoria/criar'"><i class="fas fa-plus"></i> Criar nova</button>
+            <button class="btn btn-secondary" onclick="toggleFilterPanel()"><i class="fas fa-filter"></i> Filtrar</button>
+        </div>
+    </section>
+
+    <div id="filterPanel" class="filter-panel" style="display: none;">
+        <div class="filter-form">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="filterEmpresa">Empresa</label>
+                    <select id="filterEmpresa" class="filter-select">
+                        <option value="">Todas as empresas</option>
+                        <% empresas.forEach(empresa => { %>
+                            <option value="<%= empresa.id %>"><%= empresa.razaoSocial %></option>
+                        <% }); %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filterNome">Nome da Categoria</label>
+                    <input type="text" id="filterNome" class="filter-input" placeholder="Buscar por nome">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-primary" onclick="applyFilters()"><i class="fas fa-search"></i> Aplicar Filtros</button>
+                <button type="button" class="btn btn-secondary" onclick="resetFilters()"><i class="fas fa-undo"></i> Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="content-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Empresa</th>
+                    <th>Produtos</th>
+                    <th>Criada em</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (categorias && categorias.length > 0) { %>
+                    <% categorias.forEach(categoria => { %>
+                        <tr>
+                            <td><%= categoria.id %></td>
+                            <td><%= categoria.name %></td>
+                            <td><%= categoria.empresa ? categoria.empresa.razaoSocial : 'N/A' %></td>
+                            <td><%= categoria.products ? categoria.products.length : 0 %></td>
+                            <td><%= new Date(categoria.createdAt).toLocaleDateString('pt-BR') %></td>
+                            <td>
+                                <a href="/admin/categoria/editar/<%= categoria.id %>" class="action-icon" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="#" onclick="confirmDeleteCategoria(<%= categoria.id %>, '<%= categoria.name %>')" class="action-icon delete-icon" title="Excluir"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6" class="no-results">Nenhuma categoria encontrada</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <div class="pagination-container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="First">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Last">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+</main>
+
+<script>
+    function toggleFilterPanel() {
+        const panel = document.getElementById('filterPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function applyFilters() {
+        const empresaId = document.getElementById('filterEmpresa').value;
+        const nome = document.getElementById('filterNome').value;
+        
+        let url = '/admin/categorias?';
+        
+        if (empresaId) url += `empresa=${empresaId}&`;
+        if (nome) url += `nome=${encodeURIComponent(nome)}&`;
+        
+        window.location.href = url.endsWith('&') ? url.slice(0, -1) : url;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterEmpresa').value = '';
+        document.getElementById('filterNome').value = '';
+        
+        window.location.href = '/admin/categorias';
+    }
+    
+    function confirmDeleteCategoria(id, nome) {
+        if (confirm(`Tem certeza que deseja excluir a categoria "${nome}"?\n\nAtenção: Isso também excluirá todos os produtos relacionados a esta categoria.`)) {
+            fetch(`/admin/categoria/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Categoria excluída com sucesso!');
+                    window.location.reload();
+                } else {
+                    alert('Erro ao excluir categoria: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao excluir categoria:', error);
+                alert('Erro ao excluir categoria. Verifique o console para mais detalhes.');
+            });
+        }
+    }
+    
+    // Inicializar com filtros da URL, se existirem
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.has('empresa')) {
+            document.getElementById('filterEmpresa').value = urlParams.get('empresa');
+        }
+        
+        if (urlParams.has('nome')) {
+            document.getElementById('filterNome').value = urlParams.get('nome');
+        }
+        
+        // Se houver algum filtro, mostrar o painel
+        if (urlParams.toString()) {
+            document.getElementById('filterPanel').style.display = 'block';
+        }
+    });
+</script>

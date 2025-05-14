@@ -1,0 +1,180 @@
+<main class="main-content">
+    <header class="content-header">
+        <div class="breadcrumb">
+            <span><a href="/admin">Admin</a> / </span><span class="current">Empresas</span>
+        </div>
+    </header>
+
+    <section class="content-actions">
+        <div class="title-section">
+            <h1>Empresas</h1>
+            <p class="empresas-count"><%= totalEmpresas %> empresas</p>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary" onclick="window.location.href='/admin/empresa/criar'"><i class="fas fa-plus"></i> Criar nova</button>
+            <button class="btn btn-secondary" onclick="toggleFilterPanel()"><i class="fas fa-filter"></i> Filtrar</button>
+        </div>
+    </section>
+
+    <div id="filterPanel" class="filter-panel" style="display: none;">
+        <div class="filter-form">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="filterRazaoSocial">Razão Social</label>
+                    <input type="text" id="filterRazaoSocial" class="filter-input" placeholder="Filtrar por razão social">
+                </div>
+                <div class="form-group">
+                    <label for="filterCNPJ">CNPJ</label>
+                    <input type="text" id="filterCNPJ" class="filter-input" placeholder="Filtrar por CNPJ">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-primary" onclick="applyFilters()"><i class="fas fa-search"></i> Aplicar Filtros</button>
+                <button type="button" class="btn btn-secondary" onclick="resetFilters()"><i class="fas fa-undo"></i> Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="content-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Razão Social</th>
+                    <th>CNPJ</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                    <th>Banner</th>
+                    <th>Categorias</th>
+                    <th>Produtos</th>
+                    <th>Criado em</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (empresas && empresas.length > 0) { %>
+                    <% empresas.forEach(empresa => { %>
+                        <tr>
+                            <td><%= empresa.id %></td>
+                            <td><%= empresa.razaoSocial %></td>
+                            <td><%= empresa.cnpj %></td>
+                            <td><%= empresa.email %></td>
+                            <td><%= empresa.telefone %></td>
+                            <td>
+                                <% if (empresa.bannerImagem) { %>
+                                    <img src="<%= empresa.bannerImagem.endereco %>" alt="Banner" class="thumbnail">
+                                <% } else { %>
+                                    <span class="no-image">Sem imagem</span>
+                                <% } %>
+                            </td>
+                            <td><%= empresa.categorias ? empresa.categorias.length : 0 %></td>
+                            <td><%= empresa.products ? empresa.products.length : 0 %></td>
+                            <td><%= new Date(empresa.createdAt).toLocaleDateString('pt-BR') %></td>
+                            <td>
+                                <a href="/admin/empresa/editar/<%= empresa.id %>" class="action-icon" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="#" onclick="confirmDeleteEmpresa(<%= empresa.id %>, '<%= empresa.razaoSocial %>')" class="action-icon delete-icon" title="Excluir"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="10" class="no-results">Nenhuma empresa encontrada</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <div class="pagination-container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="First">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Last">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+</main>
+
+<script>
+    function toggleFilterPanel() {
+        const panel = document.getElementById('filterPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function applyFilters() {
+        const razaoSocial = document.getElementById('filterRazaoSocial').value;
+        const cnpj = document.getElementById('filterCNPJ').value;
+        
+        let url = '/admin/empresas?';
+        
+        if (razaoSocial) url += `razaoSocial=${encodeURIComponent(razaoSocial)}&`;
+        if (cnpj) url += `cnpj=${encodeURIComponent(cnpj)}&`;
+        
+        window.location.href = url.endsWith('&') ? url.slice(0, -1) : url;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterRazaoSocial').value = '';
+        document.getElementById('filterCNPJ').value = '';
+        
+        window.location.href = '/admin/empresas';
+    }
+    
+    function confirmDeleteEmpresa(id, razaoSocial) {
+        if (confirm(`Tem certeza que deseja excluir a empresa "${razaoSocial}"?\n\nAtenção: Isso também excluirá todas as categorias e produtos relacionados a esta empresa.`)) {
+            fetch(`/admin/empresa/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Empresa excluída com sucesso!');
+                    window.location.reload();
+                } else {
+                    alert('Erro ao excluir empresa: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao excluir empresa:', error);
+                alert('Erro ao excluir empresa. Verifique o console para mais detalhes.');
+            });
+        }
+    }
+    
+    // Inicializar com filtros da URL, se existirem
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.has('razaoSocial')) {
+            document.getElementById('filterRazaoSocial').value = urlParams.get('razaoSocial');
+        }
+        
+        if (urlParams.has('cnpj')) {
+            document.getElementById('filterCNPJ').value = urlParams.get('cnpj');
+        }
+        
+        // Se houver algum filtro, mostrar o painel
+        if (urlParams.toString()) {
+            document.getElementById('filterPanel').style.display = 'block';
+        }
+    });
+</script>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Produtos - Plural</title>
+    <link rel="shortcut icon" href="/imgs/logo plural shortcut.png">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/admin-modelo.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"/>
+</head>
+<body>
+    
+
+    
+        
+
+        <main class="main-content">
+            <!-- Produtos Section - Styled according to modelo -->
+            <header class="content-header">
+                <div class="breadcrumb">
+                    <span><a href="/admin">Admin</a> / </span><span class="current">Produtos</span>
+                </div>
+            </header>
+
+            <section class="content-actions">
+                <div class="title-section">
+                    <h1>Produtos</h1>
+                    <p class="product-count"><%= totalProdutos %> produtos</p>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="window.location.href='/admin/produto/criar'"><i class="fas fa-plus"></i> Criar novo</button>
+                    <button class="btn btn-secondary" onclick="toggleFilterPanel()"><i class="fas fa-filter"></i> Filtrar</button>
+                </div>
+            </section>
+
+            <div id="filterPanel" class="filter-panel" style="display: none;">
+                <div class="filter-form">
+                    <div class="filter-row">
+                        <div class="form-group">
+                            <label for="filterEmpresa">Empresa</label>
+                            <select id="filterEmpresa" class="filter-select">
+                                <option value="">Todas as empresas</option>
+                                <% empresas.forEach(empresa => { %>
+                                    <option value="<%= empresa.id %>"><%= empresa.razaoSocial %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterCategoria">Categoria</label>
+                            <select id="filterCategoria" class="filter-select">
+                                <option value="">Todas as categorias</option>
+                                <% categorias.forEach(categoria => { %>
+                                    <option value="<%= categoria.id %>"><%= categoria.name %> (<%= categoria.empresa.razaoSocial %>)</option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filterPromo">Promoção</label>
+                            <select id="filterPromo" class="filter-select">
+                                <option value="">Todos</option>
+                                <option value="true">Em promoção</option>
+                                <option value="false">Sem promoção</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <button type="button" class="btn btn-primary" onclick="applyFilters()"><i class="fas fa-search"></i> Aplicar Filtros</button>
+                        <button type="button" class="btn btn-secondary" onclick="resetFilters()"><i class="fas fa-undo"></i> Limpar</button>
+                    </div>
+                </div>
+            </div>
+
+            <section class="content-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Categoria</th>
+                            <th>Preço</th>
+                            <th>Em Promoção?</th>
+                            <th>Desconto</th>
+                            <th>Estoque</th>
+                            <th>Empresa</th>
+                            <th>Criado em</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (produtos && produtos.length > 0) { %>
+                            <% produtos.forEach(produto => { %>
+                                <tr>
+                                    <td><%= produto.id %></td>
+                                    <td><%= produto.name %></td>
+                                    <td><%= produto.category ? produto.category.name : 'N/A' %></td>
+                                    <td>R$ <%= produto.preco.toFixed(2) %></td>
+                                    <td>
+                                        <% if (produto.boolPromo) { %>
+                                            <span class="status-promo status-promo-sim">Sim</span>
+                                        <% } else { %>
+                                            <span class="status-promo status-promo-nao">Não</span>
+                                        <% } %>
+                                    </td>
+                                    <td><%= produto.desconto ? produto.desconto + '%' : 'N/A' %></td>
+                                    <td><%= produto.estoque %></td>
+                                    <td><%= produto.empresa ? produto.empresa.razaoSocial : 'N/A' %></td>
+                                    <td><%= new Date(produto.createdAt).toLocaleDateString('pt-BR') %></td>
+                                    <td>
+                                        <a href="/admin/produto/editar/<%= produto.id %>" class="action-icon" title="Editar"><i class="fas fa-edit"></i></a>
+                                        <a href="#" onclick="confirmDeleteProduto(<%= produto.id %>, '<%= produto.name %>')" class="action-icon delete-icon" title="Excluir"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="10" class="no-results">Nenhum produto encontrado</td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+
+                <div class="pagination-container">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="First">
+                                    <i class="fas fa-angle-double-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Previous">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <!-- Adicionar paginação dinâmica quando necessário -->
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Next">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" aria-label="Last">
+                                    <i class="fas fa-angle-double-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
+        </main>
+
+    <script src="/js/admin.js"></script>
+    <script>
+        function toggleFilterPanel() {
+            const panel = document.getElementById('filterPanel');
+            panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function applyFilters() {
+            const empresaId = document.getElementById('filterEmpresa').value;
+            const categoriaId = document.getElementById('filterCategoria').value;
+            const promoStatus = document.getElementById('filterPromo').value;
+            
+            let url = '/admin/produtos?';
+            
+            if (empresaId) url += `empresa=${empresaId}&`;
+            if (categoriaId) url += `categoria=${categoriaId}&`;
+            if (promoStatus) url += `promo=${promoStatus}&`;
+            
+            window.location.href = url.endsWith('&') ? url.slice(0, -1) : url;
+        }
+        
+        function resetFilters() {
+            document.getElementById('filterEmpresa').value = '';
+            document.getElementById('filterCategoria').value = '';
+            document.getElementById('filterPromo').value = '';
+            
+            window.location.href = '/admin/produtos';
+        }
+        
+        function confirmDeleteProduto(id, nome) {
+            if (confirm(`Tem certeza que deseja excluir o produto "${nome}"?`)) {
+                fetch(`/admin/produto/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Produto excluído com sucesso!');
+                        window.location.reload();
+                    } else {
+                        alert('Erro ao excluir produto: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao excluir produto:', error);
+                    alert('Erro ao excluir produto. Verifique o console para mais detalhes.');
+                });
+            }
+        }
+        
+        // Inicializar com filtros da URL, se existirem
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            if (urlParams.has('empresa')) {
+                document.getElementById('filterEmpresa').value = urlParams.get('empresa');
+            }
+            
+            if (urlParams.has('categoria')) {
+                document.getElementById('filterCategoria').value = urlParams.get('categoria');
+            }
+            
+            if (urlParams.has('promo')) {
+                document.getElementById('filterPromo').value = urlParams.get('promo');
+            }
+            
+            // Se houver algum filtro, mostrar o painel
+            if (urlParams.toString()) {
+                document.getElementById('filterPanel').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

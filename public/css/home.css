@@ -50,6 +50,7 @@
     font-size: 1.1em;
     line-height: 1.6;
     margin-bottom: 15px;
+    text-align: justify;
 }
 
 #hero-apresentacao .hero-mensagem strong {
@@ -145,6 +146,16 @@
     font-size: 1em;
     line-height: 1.5;
     opacity: 0.85;
+}
+
+.home-main p {
+    text-align: justify;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.hero-mensagem p {
+    text-align: justify;
 }
 
 @media (max-width: 992px) {

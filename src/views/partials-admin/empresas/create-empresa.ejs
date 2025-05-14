@@ -1,0 +1,272 @@
+<main class="main-content">
+    <header class="content-header">
+        <div class="breadcrumb">
+            <span><a href="/admin">Admin</a> / </span><span><a href="/admin/empresas">Empresas</a> / </span><span class="current">Criar nova</span>
+        </div>
+    </header>
+
+    <section class="content-form-section">
+        <div class="form-header">
+            <h1>Criar nova empresa</h1>
+        </div>
+        
+        <div id="formMessages"></div>
+        
+        <form id="empresaForm" class="empresa-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="razaoSocial">Razão Social <span class="required">*</span></label>
+                <input type="text" id="razaoSocial" name="razaoSocial" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required>
+                <small class="form-text">Este e-mail será usado para login e precisa ser único.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha <span class="required">*</span></label>
+                <input type="password" id="password" name="password" required>
+                <small class="form-text">A senha deve ter no mínimo 8 caracteres.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="cnpj">CNPJ <span class="required">*</span></label>
+                <input type="text" id="cnpj" name="cnpj" required maxlength="18" placeholder="XX.XXX.XXX/XXXX-XX">
+            </div>
+
+            <div class="form-group">
+                <label for="telefone">Telefone <span class="required">*</span></label>
+                <input type="text" id="telefone" name="telefone" required maxlength="15" placeholder="(XX) XXXXX-XXXX">
+            </div>
+
+            <div class="form-group">
+                <label for="sobre">Sobre a Empresa <span class="required">*</span></label>
+                <textarea id="sobre" name="sobre" rows="6" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="bannerImagem">Banner/Logo da Empresa</label>
+                <div class="file-dropzone" id="imageDropzone">
+                    <i class="fas fa-cloud-upload-alt dropzone-icon"></i>
+                    <p>Arraste a imagem aqui ou clique para navegar</p>
+                    <span>Tamanho máximo: 5MB</span>
+                    <span>Suporta: image/png, image/jpeg, image/jpg</span>
+                    <input type="file" id="bannerImagem" name="bannerImagem" class="file-input-hidden" accept="image/png, image/jpeg, image/jpg">
+                </div>
+                <div id="imagePreviewContainer" class="image-preview-container" style="display: none;">
+                    <img id="imagePreview" src="" alt="Preview da imagem">
+                    <button type="button" id="removeImage" class="btn-remove-image"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <a href="/admin/empresas" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
+                <button type="submit" class="btn btn-primary btn-save"><i class="fas fa-save"></i> Salvar</button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Máscaras para CNPJ e telefone
+        const cnpjInput = document.getElementById('cnpj');
+        const telefoneInput = document.getElementById('telefone');
+        
+        if (cnpjInput) {
+            cnpjInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+                value = value.replace(/\D/g, ''); // Remove tudo que não é dígito
+                
+                // Adiciona a formatação do CNPJ
+                if (value.length > 0) {
+                    value = value.replace(/^(\d{2})(\d)/, '$1.$2');
+                    value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
+                    value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
+                    value = value.replace(/(\d{4})(\d)/, '$1-$2');
+                }
+                
+                e.target.value = value;
+            });
+        }
+        
+        if (telefoneInput) {
+            telefoneInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+                value = value.replace(/\D/g, ''); // Remove tudo que não é dígito
+                
+                // Adiciona a formatação do telefone
+                if (value.length > 0) {
+                    value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+                    value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+                }
+                
+                e.target.value = value;
+            });
+        }
+
+        // Configuração do Dropzone para upload de imagem
+        const dropzone = document.querySelector('.file-dropzone');
+        const fileInput = document.getElementById('bannerImagem');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const removeImageBtn = document.getElementById('removeImage');
+
+        function handleFileSelect(file) {
+            if (file && file.type.match('image.*')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    dropzone.style.display = 'none';
+                    imagePreviewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        if (dropzone) {
+            dropzone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            dropzone.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                dropzone.classList.add('dragging');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('dragging');
+            });
+
+            dropzone.addEventListener('drop', (event) => {
+                event.preventDefault();
+                dropzone.classList.remove('dragging');
+                const files = event.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect(files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (event) => {
+                if (event.target.files.length > 0) {
+                    handleFileSelect(event.target.files[0]);
+                }
+            });
+
+            removeImageBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                imagePreview.src = '';
+                imagePreviewContainer.style.display = 'none';
+                dropzone.style.display = 'block';
+            });
+        }
+
+        // Verificar se email já existe
+        const emailInput = document.getElementById('email');
+        
+        if (emailInput) {
+            emailInput.addEventListener('blur', async function() {
+                const email = this.value.trim();
+                if (email && /^\S+@\S+\.\S+$/.test(email)) { // Verificação básica de formato de email
+                    try {
+                        const response = await fetch(`/admin/check-email?email=${encodeURIComponent(email)}`);
+                        const data = await response.json();
+                        
+                        if (data.exists) {
+                            this.classList.add('error-field');
+                            showMessage('Este e-mail já está cadastrado. Por favor, use outro e-mail.', 'error');
+                        } else {
+                            this.classList.remove('error-field');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao verificar email:', error);
+                    }
+                }
+            });
+        }
+
+        // Submissão do formulário via AJAX
+        const empresaForm = document.getElementById('empresaForm');
+        const formMessages = document.getElementById('formMessages');
+
+        if (empresaForm) {
+            empresaForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Validação do formulário
+                const requiredFields = empresaForm.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('error-field');
+                    } else {
+                        field.classList.remove('error-field');
+                    }
+                });
+                
+                // Validar senha
+                const passwordField = document.getElementById('password');
+                if (passwordField.value.length < 8) {
+                    isValid = false;
+                    passwordField.classList.add('error-field');
+                    showMessage('A senha deve ter no mínimo 8 caracteres.', 'error');
+                    return;
+                }
+                
+                if (!isValid) {
+                    showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
+                    return;
+                }
+                
+                // Enviar dados via AJAX
+                const formData = new FormData(empresaForm);
+                
+                try {
+                    const response = await fetch('/admin/empresa', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showMessage(result.message, 'success');
+                        // Redirecionar após 2 segundos
+                        setTimeout(() => {
+                            window.location.href = '/admin/empresas';
+                        }, 2000);
+                    } else {
+                        // Verificar mensagens específicas de erro
+                        if (result.message.includes('já cadastrado')) {
+                            if (result.message.includes('E-mail')) {
+                                document.getElementById('email').classList.add('error-field');
+                            } else if (result.message.includes('CNPJ')) {
+                                document.getElementById('cnpj').classList.add('error-field');
+                            }
+                        }
+                        showMessage(result.message || 'Erro ao criar empresa', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar formulário:', error);
+                    showMessage('Erro ao enviar formulário. Verifique o console para detalhes.', 'error');
+                }
+            });
+        }
+        
+        function showMessage(message, type) {
+            if (formMessages) {
+                formMessages.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+                formMessages.scrollIntoView({ behavior: 'smooth' });
+                
+                // Limpar mensagem após 5 segundos
+                setTimeout(() => {
+                    formMessages.innerHTML = '';
+                }, 5000);
+            }
+        }
+    });
+</script>

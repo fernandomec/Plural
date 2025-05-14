@@ -28,12 +28,15 @@
                 <% carrinho.items.forEach(item => { %>
                 <tr data-item-id="<%= item.id %>">
                     <td>
-                        <div class="imagem-produto">
-                            <% if (item.product.images && item.product.images[0]) { %>
-                                <img src="<%= item.product.images[0].endereco %>" alt="<%= item.product.name %>">
-                            <% } else { %>
-                                <img src="/uploads/produtos/placeholder-img.png" alt="Placeholder">
-                            <% } %>
+                        <div class="produto-info">
+                            <div class="imagem-produto">
+                                <% if (item.product.images && item.product.images[0]) { %>
+                                    <img src="<%= item.product.images[0].endereco %>" alt="<%= item.product.name %>">
+                                <% } else { %>
+                                    <img src="/uploads/produtos/placeholder-img.png" alt="Placeholder">
+                                <% } %>
+                            </div>
+                            <div class="produto-nome"><%= item.product.name %></div>
                         </div>
                     </td>
                     <td>R$ <%= item.product.preco.toFixed(2) %></td>
@@ -78,7 +81,6 @@
                     <td class="total">R$ <%= carrinho.total.toFixed(2) %></td>
                 </tr>
             </table>
-        
         
             <button class="checkout-btn" type="button" onclick="window.location.href='/checkout'">FINALIZAR COMPRA</button>
         </div>

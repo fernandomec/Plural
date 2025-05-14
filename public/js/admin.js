@@ -18,7 +18,7 @@ const OrderStatus = {
 // EMPRESAS
 async function fetchEmpresas() {
     try {
-        const response = await fetch('/admin/empresas');
+        const response = await fetch('/admin/api/empresas');
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const empresas = await response.json();
         displayEmpresas(empresas);
@@ -31,7 +31,6 @@ async function fetchEmpresas() {
 function displayEmpresas(empresas) {
     const container = document.getElementById('empresasList');
     container.innerHTML = ''; // Limpa conteúdo anterior
-    container.style.display = 'block';
 
     if (!empresas || empresas.length === 0) {
         container.innerHTML = '<p>Nenhuma empresa encontrada.</p>';
@@ -58,32 +57,13 @@ function displayEmpresas(empresas) {
                     <td>${empresa.email}</td>
                     <td>${empresa.cnpj}</td>
                     <td>
-                        <button onclick="deleteEmpresa(${empresa.id})" class="delete-button">Deletar</button>
+                        <button onclick="deleteEmpresa(${empresa.id})" class="delete-button"><i class="fas fa-trash"></i> Deletar</button>
                     </td>
                 </tr>
             `).join('')}
         </tbody>
     `;
     container.appendChild(table);
-}
-
-async function deleteEmpresa(empresaId) {
-    if (!confirm(`Tem certeza que deseja deletar a empresa ID ${empresaId}? Isso também removerá categorias, produtos e pedidos associados a ela.`)) {
-        return;
-    }
-    try {
-        const response = await fetch(`/admin/empresa/${empresaId}`, { method: 'DELETE' });
-        const data = await response.json();
-        if (response.ok && data.success) {
-            showAdminMessage(data.message || 'Empresa deletada com sucesso!');
-            fetchEmpresas(); // Atualiza a lista
-        } else {
-            throw new Error(data.message || 'Erro ao deletar empresa.');
-        }
-    } catch (error) {
-        console.error('Erro ao deletar empresa:', error);
-        showAdminMessage(error.message, 'error');
-    }
 }
 
 // CATEGORIAS
@@ -116,7 +96,6 @@ function displayCategorias(categorias) {
     }
     
     container.innerHTML = '';
-    container.style.display = 'block';
 
     if (!categorias || categorias.length === 0) {
         container.innerHTML = '<p>Nenhuma categoria encontrada.</p>';
@@ -141,32 +120,13 @@ function displayCategorias(categorias) {
                     <td>${cat.name}</td>
                     <td>${cat.empresa ? cat.empresa.razaoSocial : 'N/A'}</td>
                     <td>
-                        <button onclick="deleteCategoria(${cat.id})" class="delete-button">Deletar</button>
+                        <button onclick="deleteCategoria(${cat.id})" class="delete-button"><i class="fas fa-trash"></i> Deletar</button>
                     </td>
                 </tr>
             `).join('')}
         </tbody>
     `;
     container.appendChild(table);
-}
-
-async function deleteCategoria(categoriaId) {
-    if (!confirm(`Tem certeza que deseja deletar a categoria ID ${categoriaId}? Isso pode afetar produtos associados.`)) {
-        return;
-    }
-    try {
-        const response = await fetch(`/admin/categoria/${categoriaId}`, { method: 'DELETE' });
-        const data = await response.json();
-        if (response.ok && data.success) {
-            showAdminMessage(data.message || 'Categoria deletada com sucesso!');
-            fetchCategorias(); // Atualiza a lista
-        } else {
-            throw new Error(data.message || 'Erro ao deletar categoria.');
-        }
-    } catch (error) {
-        console.error('Erro ao deletar categoria:', error);
-        showAdminMessage(error.message, 'error');
-    }
 }
 
 // PRODUTOS
@@ -185,7 +145,6 @@ async function fetchProdutos() {
 function displayProdutos(produtos) {
     const container = document.getElementById('produtosList');
     container.innerHTML = '';
-    container.style.display = 'block';
 
     if (!produtos || produtos.length === 0) {
         container.innerHTML = '<p>Nenhum produto encontrado.</p>';
@@ -214,7 +173,7 @@ function displayProdutos(produtos) {
                     <td>${prod.empresa ? prod.empresa.razaoSocial : 'N/A'}</td>
                     <td>${prod.category ? prod.category.name : 'N/A'}</td>
                     <td>
-                        <button onclick="deleteProduto(${prod.id})" class="delete-button">Deletar</button>
+                        <button onclick="deleteProduto(${prod.id})" class="delete-button"><i class="fas fa-trash"></i> Deletar</button>
                     </td>
                 </tr>
             `).join('')}
@@ -222,26 +181,6 @@ function displayProdutos(produtos) {
     `;
     container.appendChild(table);
 }
-
-async function deleteProduto(produtoId) {
-    if (!confirm(`Tem certeza que deseja deletar o produto ID ${produtoId}?`)) {
-        return;
-    }
-    try {
-        const response = await fetch(`/admin/produto/${produtoId}`, { method: 'DELETE' });
-        const data = await response.json();
-        if (response.ok && data.success) {
-            showAdminMessage(data.message || 'Produto deletado com sucesso!');
-            fetchProdutos(); // Atualiza a lista
-        } else {
-            throw new Error(data.message || 'Erro ao deletar produto.');
-        }
-    } catch (error) {
-        console.error('Erro ao deletar produto:', error);
-        showAdminMessage(error.message, 'error');
-    }
-}
-
 
 // USUÁRIOS (Gerenciar Acessos)
 async function fetchUsuarios() {
@@ -283,9 +222,9 @@ function displayUsuarios(usuarios) {
                     <td>${user.id}</td>
                     <td>${user.username}</td>
                     <td>${user.email}</td>
-                    <td>${user.role}</td>
+                    <td><span class="category-tag">${user.role}</span></td>
                     <td>
-                        <button onclick="deleteUsuario(${user.id})" class="delete-button">Deletar</button>
+                        <button onclick="deleteUsuario(${user.id})" class="delete-button"><i class="fas fa-trash"></i> Deletar</button>
                     </td>
                 </tr>
             `).join('')}
@@ -333,7 +272,7 @@ async function searchUser() {
         if (response.ok && data.success && data.user) {
             resultDiv.innerHTML = `
                 <div class="success-message">
-                    Usuário Encontrado: <br>
+                    <strong>Usuário Encontrado:</strong><br>
                     ID: ${data.user.id}<br>
                     Email: ${data.user.email}<br>
                     Nome: ${data.user.username}<br>
@@ -549,7 +488,6 @@ function pesquisarPedidosAdmin() {
 function displayAdminPedidos(pedidos) {
     const container = document.getElementById('adminPedidosList');
     container.innerHTML = '';
-    container.style.display = 'block';
 
     // A rota agora sempre retorna um array, mesmo para busca por ID (com 0 ou 1 elemento)
     if (!pedidos || pedidos.length === 0) {
@@ -558,7 +496,7 @@ function displayAdminPedidos(pedidos) {
     }
     
     const table = document.createElement('table');
-    table.className = 'admin-pedidos-table admin-table'; // Adicionada classe admin-table
+    table.className = 'admin-table'; 
     const thead = document.createElement('thead');
     thead.innerHTML = `
         <tr>
@@ -604,17 +542,20 @@ function displayAdminPedidos(pedidos) {
             <td id="current-status-${pedido.id}">${pedido.status.replace(/_/g, ' ')}</td>
             <td>${new Date(pedido.createdAt).toLocaleDateString('pt-BR')}</td>
             <td>
-                <select id="${selectId}" data-pedido-id="${pedido.id}" class="status-select">
-                    ${orderStatusValues.map(statusKey => 
-                        `<option value="${statusKey}" ${pedido.status === statusKey ? 'selected' : ''}>
-                            ${statusKey.replace(/_/g, ' ')}
-                        </option>`
-                    ).join('')}
-                </select>
+                <div class="custom-select-wrapper">
+                    <select id="${selectId}" data-pedido-id="${pedido.id}" class="status-select">
+                        ${orderStatusValues.map(statusKey => 
+                            `<option value="${statusKey}" ${pedido.status === statusKey ? 'selected' : ''}>
+                                ${statusKey.replace(/_/g, ' ')}
+                            </option>`
+                        ).join('')}
+                    </select>
+                    <i class="fas fa-chevron-down select-arrow"></i>
+                </div>
             </td>
             <td>
-                <button id="${buttonId}" onclick="updateAdminPedidoStatus(${pedido.id})" class="action-button">
-                    Atualizar Status
+                <button id="${buttonId}" onclick="updateAdminPedidoStatus(${pedido.id})" class="btn btn-primary btn-sm">
+                    <i class="fas fa-check"></i> Atualizar
                 </button>
             </td>
         `;

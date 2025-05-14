@@ -1,0 +1,194 @@
+<main class="main-content">
+    <header class="content-header">
+        <div class="breadcrumb">
+            <span><a href="/admin">Admin</a> / </span><span class="current">Usuários</span>
+        </div>
+    </header>
+
+    <section class="content-actions">
+        <div class="title-section">
+            <h1>Usuários</h1>
+            <p class="user-count"><%= totalUsuarios %> usuários</p>
+        </div>
+        <div class="actions">
+            <button class="btn btn-primary" onclick="window.location.href='/admin/usuario/criar'"><i class="fas fa-plus"></i> Criar novo</button>
+            <button class="btn btn-secondary" onclick="toggleFilterPanel()"><i class="fas fa-filter"></i> Filtrar</button>
+        </div>
+    </section>
+
+    <div id="filterPanel" class="filter-panel" style="display: none;">
+        <div class="filter-form">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="filterEmail">E-mail</label>
+                    <input type="text" id="filterEmail" class="filter-input" placeholder="Filtrar por e-mail">
+                </div>
+                <div class="form-group">
+                    <label for="filterUsername">Nome de Usuário</label>
+                    <input type="text" id="filterUsername" class="filter-input" placeholder="Filtrar por username">
+                </div>
+                <div class="form-group">
+                    <label for="filterRole">Função</label>
+                    <select id="filterRole" class="filter-select">
+                        <option value="">Todas as funções</option>
+                        <option value="USER">Usuário</option>
+                        <option value="EDITOR">Editor</option>
+                        <option value="ADMIN">Administrador</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-primary" onclick="applyFilters()"><i class="fas fa-search"></i> Aplicar Filtros</button>
+                <button type="button" class="btn btn-secondary" onclick="resetFilters()"><i class="fas fa-undo"></i> Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="content-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>E-mail</th>
+                    <th>Função</th>
+                    <th>Telefone</th>
+                    <th>Pedidos</th>
+                    <th>Criado em</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (usuarios && usuarios.length > 0) { %>
+                    <% usuarios.forEach(usuario => { %>
+                        <tr>
+                            <td><%= usuario.id %></td>
+                            <td><%= usuario.username %></td>
+                            <td><%= usuario.email %></td>
+                            <td>
+                                <% if (usuario.role === 'ADMIN') { %>
+                                    <span class="status-role status-admin">Administrador</span>
+                                <% } else if (usuario.role === 'EDITOR') { %>
+                                    <span class="status-role status-editor">Editor</span>
+                                <% } else { %>
+                                    <span class="status-role status-user">Usuário</span>
+                                <% } %>
+                            </td>
+                            <td><%= usuario.tel || 'N/A' %></td>
+                            <td><%= usuario.pedidos ? usuario.pedidos.length : 0 %></td>
+                            <td><%= new Date(usuario.createdAt).toLocaleDateString('pt-BR') %></td>
+                            <td>
+                                <a href="/admin/usuario/editar/<%= usuario.id %>" class="action-icon" title="Editar"><i class="fas fa-edit"></i></a>
+                                <a href="#" onclick="confirmDeleteUsuario(<%= usuario.id %>, '<%= usuario.username %>')" class="action-icon delete-icon" title="Excluir"><i class="fas fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="8" class="no-results">Nenhum usuário encontrado</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <div class="pagination-container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="First">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Last">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+</main>
+
+<script>
+    function toggleFilterPanel() {
+        const panel = document.getElementById('filterPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function applyFilters() {
+        const email = document.getElementById('filterEmail').value;
+        const username = document.getElementById('filterUsername').value;
+        const role = document.getElementById('filterRole').value;
+        
+        let url = '/admin/usuarios?';
+        
+        if (email) url += `email=${encodeURIComponent(email)}&`;
+        if (username) url += `username=${encodeURIComponent(username)}&`;
+        if (role) url += `role=${encodeURIComponent(role)}&`;
+        
+        window.location.href = url.endsWith('&') ? url.slice(0, -1) : url;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterEmail').value = '';
+        document.getElementById('filterUsername').value = '';
+        document.getElementById('filterRole').value = '';
+        
+        window.location.href = '/admin/usuarios';
+    }
+    
+    function confirmDeleteUsuario(id, username) {
+        if (confirm(`Tem certeza que deseja excluir o usuário "${username}"?\n\nEsta ação não pode ser desfeita e removerá todo o histórico deste usuário.`)) {
+            fetch(`/admin/usuario/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Usuário excluído com sucesso!');
+                    window.location.reload();
+                } else {
+                    alert('Erro ao excluir usuário: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao excluir usuário:', error);
+                alert('Erro ao excluir usuário. Verifique o console para mais detalhes.');
+            });
+        }
+    }
+    
+    // Inicializar com filtros da URL, se existirem
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.has('email')) {
+            document.getElementById('filterEmail').value = urlParams.get('email');
+        }
+        
+        if (urlParams.has('username')) {
+            document.getElementById('filterUsername').value = urlParams.get('username');
+        }
+        
+        if (urlParams.has('role')) {
+            document.getElementById('filterRole').value = urlParams.get('role');
+        }
+        
+        // Se houver algum filtro, mostrar o painel
+        if (urlParams.toString()) {
+            document.getElementById('filterPanel').style.display = 'block';
+        }
+    });
+</script>
