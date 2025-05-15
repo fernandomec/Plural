@@ -12,6 +12,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     padding: 0px 25px 50px 25px;
+    flex-wrap: wrap;
 }
 
 table {
@@ -39,9 +40,16 @@ td {
     gap: 10px;
 }
 
-.produto-info img {
-    width: 40px;
-    height: auto;
+.imagem-produto {
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+}
+
+.imagem-produto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .quantidade-container {
@@ -63,7 +71,7 @@ td {
     width: 35px;
     height: 35px;
 }
-.quantity-btn:hover {
+quantity-btn:hover {
     background-color: gray;
 }
 
@@ -76,7 +84,6 @@ td {
 
 #excluir-btn:hover {
     scale: 1.2;
-
     transition: 300ms;
 }
 
@@ -87,8 +94,8 @@ td {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    
 }
+
 .checkout h3 {
     padding: 20px;
     margin: 0;
@@ -125,4 +132,63 @@ td {
 
 .checkout-btn:hover {
     background-color: #151f5e;
+}
+
+/* Media queries for responsive design */
+@media screen and (max-width: 768px) {
+    .carrinho-container {
+        flex-direction: column;
+        padding: 0 10px 30px 10px;
+    }
+    
+    table {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+    
+    th:nth-child(2), td:nth-child(2) {
+        display: none;
+    }
+    
+    .checkout {
+        width: 100%;
+    }
+    
+    .quantidade-container {
+        gap: 5px;
+    }
+    
+    .quantity-btn {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    th {
+        font-size: 14px;
+    }
+    
+    table {
+        font-size: 14px;
+    }
+    
+    .imagem-produto {
+        width: 60px;
+        height: 60px;
+    }
+    
+    th:nth-child(4), td:nth-child(4) {
+        display: none;
+    }
+    
+    .quantidade-container {
+        gap: 2px;
+    }
+    
+    .quantity-btn {
+        width: 25px;
+        height: 25px;
+        font-size: 16px;
+    }
 }

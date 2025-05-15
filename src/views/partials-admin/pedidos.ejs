@@ -1,0 +1,237 @@
+<main class="main-content">
+    <header class="content-header">
+        <div class="breadcrumb">
+            <span><a href="/admin">Admin</a> / </span><span class="current">Pedidos</span>
+        </div>
+    </header>
+
+    <section class="content-actions">
+        <div class="title-section">
+            <h1>Pedidos</h1>
+            <p class="pedidos-count"><%= totalPedidos %> pedidos</p>
+        </div>
+        <div class="actions">
+            <button class="btn btn-secondary" onclick="toggleFilterPanel()"><i class="fas fa-filter"></i> Filtrar</button>
+            <button class="btn btn-secondary" onclick="exportPedidos()"><i class="fas fa-file-export"></i> Exportar</button>
+        </div>
+    </section>
+
+    <div id="filterPanel" class="filter-panel" style="display: none;">
+        <div class="filter-form">
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="filterEmpresa">Empresa</label>
+                    <select id="filterEmpresa" class="filter-select">
+                        <option value="">Todas as empresas</option>
+                        <% if (typeof empresas !== 'undefined' && empresas.length > 0) { %>
+                            <% empresas.forEach(empresa => { %>
+                                <option value="<%= empresa.id %>"><%= empresa.razaoSocial %></option>
+                            <% }); %>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filterUsuario">Cliente</label>
+                    <select id="filterUsuario" class="filter-select">
+                        <option value="">Todos os clientes</option>
+                        <% if (typeof usuarios !== 'undefined' && usuarios.length > 0) { %>
+                            <% usuarios.forEach(usuario => { %>
+                                <option value="<%= usuario.id %>"><%= usuario.username %> (<%= usuario.email %>)</option>
+                            <% }); %>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="filterStatus">Status</label>
+                    <select id="filterStatus" class="filter-select">
+                        <option value="">Todos os status</option>
+                        <option value="PEDIDO_RECEBIDO">Pedido Recebido</option>
+                        <option value="PAGAMENTO_APROVADO">Pagamento Aprovado</option>
+                        <option value="EM_SEPARACAO">Em Separação</option>
+                        <option value="ENVIADO_TRANSPORTADORA">Enviado à Transportadora</option>
+                        <option value="EM_TRANSPORTE">Em Transporte</option>
+                        <option value="EM_ROTA_DE_ENTREGA">Em Rota de Entrega</option>
+                        <option value="ENTREGUE">Entregue</option>
+                        <option value="TROCA_DEVOLUCAO_SOLICITADA">Troca/Devolução Solicitada</option>
+                        <option value="TROCA_DEVOLUCAO_CONCLUIDA">Troca/Devolução Concluída</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-row">
+                <div class="form-group">
+                    <label for="filterDataInicio">Data Inicial</label>
+                    <input type="date" id="filterDataInicio" class="filter-input">
+                </div>
+                <div class="form-group">
+                    <label for="filterDataFim">Data Final</label>
+                    <input type="date" id="filterDataFim" class="filter-input">
+                </div>
+                <div class="form-group">
+                    <label for="filterValorMinimo">Valor Mínimo</label>
+                    <input type="number" id="filterValorMinimo" class="filter-input" min="0" step="0.01" placeholder="R$">
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button type="button" class="btn btn-primary" onclick="applyFilters()"><i class="fas fa-search"></i> Aplicar Filtros</button>
+                <button type="button" class="btn btn-secondary" onclick="resetFilters()"><i class="fas fa-undo"></i> Limpar</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="content-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Empresa</th>
+                    <th>Valor Total</th>
+                    <th>Status</th>
+                    <th>Forma de Pagamento</th>
+                    <th>Data do Pedido</th>
+                    <th>Atualizado em</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (pedidos && pedidos.length > 0) { %>
+                    <% pedidos.forEach(pedido => { %>
+                        <tr>
+                            <td><%= pedido.id %></td>
+                            <td><%= pedido.user ? pedido.user.username : 'N/A' %></td>
+                            <td><%= pedido.empresa ? pedido.empresa.razaoSocial : 'N/A' %></td>
+                            <td>R$ <%= pedido.totalAmount.toFixed(2) %></td>
+                            <td>
+                                <span class="status-pedido status-<%= pedido.status.toLowerCase() %>">
+                                    <%= formatPedidoStatus(pedido.status) %>
+                                </span>
+                            </td>
+                            <td><%= pedido.paymentMethod %></td>
+                            <td><%= new Date(pedido.createdAt).toLocaleDateString('pt-BR') %></td>
+                            <td><%= new Date(pedido.updatedAt).toLocaleDateString('pt-BR') %></td>
+                            <td>
+                                <a href="/admin/pedido/editar/<%= pedido.id %>" class="action-icon" title="Editar"><i class="fas fa-edit"></i></a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="9" class="no-results">Nenhum pedido encontrado</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+
+        <div class="pagination-container">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="First">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" aria-label="Last">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+</main>
+
+<script>
+    function toggleFilterPanel() {
+        const panel = document.getElementById('filterPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+    
+    function applyFilters() {
+        const empresa = document.getElementById('filterEmpresa').value;
+        const usuario = document.getElementById('filterUsuario').value;
+        const status = document.getElementById('filterStatus').value;
+        const dataInicio = document.getElementById('filterDataInicio').value;
+        const dataFim = document.getElementById('filterDataFim').value;
+        const valorMinimo = document.getElementById('filterValorMinimo').value;
+        
+        let url = '/admin/pedidos?';
+        
+        if (empresa) url += `empresa=${empresa}&`;
+        if (usuario) url += `usuario=${usuario}&`;
+        if (status) url += `status=${status}&`;
+        if (dataInicio) url += `dataInicio=${dataInicio}&`;
+        if (dataFim) url += `dataFim=${dataFim}&`;
+        if (valorMinimo) url += `valorMinimo=${valorMinimo}&`;
+        
+        window.location.href = url.endsWith('&') ? url.slice(0, -1) : url;
+    }
+    
+    function resetFilters() {
+        document.getElementById('filterEmpresa').value = '';
+        document.getElementById('filterUsuario').value = '';
+        document.getElementById('filterStatus').value = '';
+        document.getElementById('filterDataInicio').value = '';
+        document.getElementById('filterDataFim').value = '';
+        document.getElementById('filterValorMinimo').value = '';
+        
+        window.location.href = '/admin/pedidos';
+    }
+    
+    function exportPedidos() {
+        // Construir a URL com os mesmos filtros atuais
+        const currentUrl = new URL(window.location.href);
+        const searchParams = currentUrl.searchParams;
+        
+        // Adicionar parâmetro de exportação
+        searchParams.set('export', 'true');
+        
+        // Redirecionar para exportação
+        window.location.href = `/admin/pedidos/export?${searchParams.toString()}`;
+    }
+    
+    // Inicializar com filtros da URL, se existirem
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        if (urlParams.has('empresa')) {
+            document.getElementById('filterEmpresa').value = urlParams.get('empresa');
+        }
+        
+        if (urlParams.has('usuario')) {
+            document.getElementById('filterUsuario').value = urlParams.get('usuario');
+        }
+        
+        if (urlParams.has('status')) {
+            document.getElementById('filterStatus').value = urlParams.get('status');
+        }
+        
+        if (urlParams.has('dataInicio')) {
+            document.getElementById('filterDataInicio').value = urlParams.get('dataInicio');
+        }
+        
+        if (urlParams.has('dataFim')) {
+            document.getElementById('filterDataFim').value = urlParams.get('dataFim');
+        }
+        
+        if (urlParams.has('valorMinimo')) {
+            document.getElementById('filterValorMinimo').value = urlParams.get('valorMinimo');
+        }
+        
+        // Se houver algum filtro, mostrar o painel
+        if (urlParams.toString()) {
+            document.getElementById('filterPanel').style.display = 'block';
+        }
+    });
+</script>

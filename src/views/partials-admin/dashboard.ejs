@@ -1,0 +1,733 @@
+<main class="main-content">
+    <header class="content-header">
+        <div class="breadcrumb">
+            <span>Admin / </span><span class="current">Dashboard</span>
+        </div>
+    </header>
+
+    <!-- Debug info (will be hidden in production) -->
+    <div id="debugInfo" class="debug-info">
+        <button onclick="toggleDebugInfo()" class="btn btn-sm btn-secondary">Toggle Debug Info</button>
+        <div id="debugContent" style="display: none;">
+            <p><strong>Total Vendas:</strong> R$ <%= typeof totalVendas !== 'undefined' ? totalVendas.toFixed(2) : '0.00' %></p>
+            <p><strong>Produtos Vendidos:</strong> <%= typeof contagem !== 'undefined' && contagem.produtos ? contagem.produtos : 0 %></p>
+            <p><strong>Usuarios:</strong> <%= typeof totalUsuarios !== 'undefined' ? totalUsuarios : 0 %></p>
+            <p><strong>Crescimento:</strong> <%= typeof crescimento !== 'undefined' ? crescimento : 0 %>%</p>
+            <% if (typeof pedidosPorStatus !== 'undefined') { %>
+                <p><strong>Pedidos por Status:</strong></p>
+                <ul>
+                    <% Object.entries(pedidosPorStatus).forEach(([status, count]) => { %>
+                        <li><%= status %>: <%= count %></li>
+                    <% }); %>
+                </ul>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Estatísticas Gerais -->
+    <section class="dashboard-stats">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                <div class="stat-data">
+                    <h3>Total de Vendas</h3>
+                    <p class="stat-value">R$ <%= typeof totalVendas !== 'undefined' ? totalVendas.toFixed(2) : '0.00' %></p>
+                    <span class="stat-period">Mês atual</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-box"></i></div>
+                <div class="stat-data">
+                    <h3>Produtos Vendidos</h3>
+                    <p class="stat-value"><%= typeof contagem !== 'undefined' && contagem.produtos ? contagem.produtos : 0 %></p>
+                    <span class="stat-period">Mês atual</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-data">
+                    <h3>Clientes Ativos</h3>
+                    <p class="stat-value"><%= typeof totalUsuarios !== 'undefined' ? totalUsuarios : 0 %></p>
+                    <span class="stat-period">Total</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-percent"></i></div>
+                <div class="stat-data">
+                    <h3>Crescimento</h3>
+                    <p class="stat-value"><%= typeof crescimento !== 'undefined' && crescimento > 0 ? '+' : '' %><%= typeof crescimento !== 'undefined' ? crescimento : 0 %>%</p>
+                    <span class="stat-period">Comparado ao mês anterior</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cartões de Status de Pedidos -->
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2>Status dos Pedidos</h2>
+            <div class="reload-button">
+                <button onclick="atualizarStatusPedidos()" class="btn btn-sm btn-secondary"><i class="fas fa-sync-alt"></i> Atualizar</button>
+            </div>
+        </div>
+        
+        <div class="order-status-cards">
+            <div class="order-status-card" data-status="PEDIDO_RECEBIDO">
+                <div class="status-icon" style="background-color: #FEF3C7;">
+                    <i class="fas fa-inbox" style="color: #92400E;"></i>
+                </div>
+                <div class="status-content">
+                    <h4>Pedidos Recebidos</h4>
+                    <p class="status-count" id="count-PEDIDO_RECEBIDO">0</p>
+                    <p class="status-description">Pedidos que acabaram de ser realizados</p>
+                </div>
+                <a href="/admin/pedidos?status=PEDIDO_RECEBIDO" class="status-link">Ver pedidos <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="order-status-card" data-status="PAGAMENTO_APROVADO">
+                <div class="status-icon" style="background-color: #D1FAE5;">
+                    <i class="fas fa-check-circle" style="color: #065F46;"></i>
+                </div>
+                <div class="status-content">
+                    <h4>Pagamentos Aprovados</h4>
+                    <p class="status-count" id="count-PAGAMENTO_APROVADO">0</p>
+                    <p class="status-description">Pedidos com pagamento confirmado</p>
+                </div>
+                <a href="/admin/pedidos?status=PAGAMENTO_APROVADO" class="status-link">Ver pedidos <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="order-status-card" data-status="EM_SEPARACAO">
+                <div class="status-icon" style="background-color: #E0F2FE;">
+                    <i class="fas fa-box-open" style="color: #0369A1;"></i>
+                </div>
+                <div class="status-content">
+                    <h4>Em Separação</h4>
+                    <p class="status-count" id="count-EM_SEPARACAO">0</p>
+                    <p class="status-description">Pedidos em processo de separação</p>
+                </div>
+                <a href="/admin/pedidos?status=EM_SEPARACAO" class="status-link">Ver pedidos <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="order-status-card" data-status="ENVIADO_TRANSPORTADORA">
+                <div class="status-icon" style="background-color: #DBEAFE;">
+                    <i class="fas fa-shipping-fast" style="color: #1E40AF;"></i>
+                </div>
+                <div class="status-content">
+                    <h4>Enviados à Transportadora</h4>
+                    <p class="status-count" id="count-ENVIADO_TRANSPORTADORA">0</p>
+                    <p class="status-description">Pedidos enviados para a transportadora</p>
+                </div>
+                <a href="/admin/pedidos?status=ENVIADO_TRANSPORTADORA" class="status-link">Ver pedidos <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="order-status-card" data-status="EM_TRANSPORTE">
+                <div class="status-icon" style="background-color: #EDE9FE;">
+                    <i class="fas fa-truck" style="color: #5B21B6;"></i>
+                </div>
+                <div class="status-content">
+                    <h4>Em Transporte</h4>
+                    <p class="status-count" id="count-EM_TRANSPORTE">0</p>
+                    <p class="status-description">Pedidos em transporte para o destino</p>
+                </div>
+                <a href="/admin/pedidos?status=EM_TRANSPORTE" class="status-link">Ver pedidos <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="order-status-card" data-status="EM_ROTA_DE_ENTREGA">
+                <div class="status-icon" style="background-color: #FFEDD5;">
+                    <i class="fas fa-map-marker-alt" style="color: #9A3412;"></i>
+                </div>
+                <div class="status-content">
+                    <h4>Em Rota de Entrega</h4>
+                    <p class="status-count" id="count-EM_ROTA_DE_ENTREGA">0</p>
+                    <p class="status-description">Pedidos em rota para entrega final</p>
+                </div>
+                <a href="/admin/pedidos?status=EM_ROTA_DE_ENTREGA" class="status-link">Ver pedidos <i class="fas fa-arrow-right"></i></a>
+            </div>
+            
+            <div class="order-status-card" data-status="ENTREGUE">
+                <div class="status-icon" style="background-color: #DCFCE7;">
+                    <i class="fas fa-check-double" style="color: #166534;"></i>
+                </div>
+                <div class="status-content">
+                    <h4>Entregues</h4>
+                    <p class="status-count" id="count-ENTREGUE">0</p>
+                    <p class="status-description">Pedidos entregues com sucesso</p>
+                </div>
+                <a href="/admin/pedidos?status=ENTREGUE" class="status-link">Ver pedidos <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Relatório de Vendas por Empresa -->
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2>Relatório de Vendas por Empresa</h2>
+            <div class="period-selector">
+                <button class="period-btn active" data-period="week">Semana</button>
+                <button class="period-btn" data-period="month">Mês</button>
+                <button class="period-btn" data-period="year">Ano</button>
+            </div>
+        </div>
+        
+        <div class="companies-sales-report">
+            <% if (typeof vendasPorEmpresa !== 'undefined' && vendasPorEmpresa.length > 0) { %>
+                <% vendasPorEmpresa.slice(0, 3).forEach(empresa => { %>
+                    <div class="company-sales-card">
+                        <div class="company-info">
+                            <div class="company-logo">
+                                <%= empresa.nome.charAt(0) %>
+                            </div>
+                            <h3><%= empresa.nome %></h3>
+                        </div>
+                        <div class="sales-data">
+                            <div class="sales-amount">
+                                <span class="sales-label">Total vendido:</span>
+                                <span class="sales-value">R$ <%= empresa.totalVendas.toFixed(2) %></span>
+                            </div>
+                            <div class="sales-percentage">
+                                <div class="progress-bar">
+                                    <div class="progress" style="width: <%= empresa.percentual %>%"></div>
+                                </div>
+                                <span class="percentage-value"><%= empresa.percentual %>%</span>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <div class="company-sales-card">
+                    <div class="company-info">
+                        <div class="company-logo">?</div>
+                        <h3>Sem dados</h3>
+                    </div>
+                    <div class="sales-data">
+                        <div class="sales-amount">
+                            <span class="sales-label">Total vendido:</span>
+                            <span class="sales-value">R$ 0.00</span>
+                        </div>
+                        <div class="sales-percentage">
+                            <div class="progress-bar">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                            <span class="percentage-value">0%</span>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="companySalesChart"></canvas>
+        </div>
+    </section>
+
+    <!-- Relatório de Compras por Cliente -->
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2>Compras por Cliente</h2>
+            <div class="filter-controls">
+                <select id="clientFilter" class="filter-select">
+                    <option value="">Todos os Clientes</option>
+                    <% if (typeof comprasPorCliente !== 'undefined' && comprasPorCliente.length > 0) { %>
+                        <% comprasPorCliente.forEach(cliente => { %>
+                            <option value="<%= cliente.clienteId %>"><%= cliente.clienteNome %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+                <select id="companyFilter" class="filter-select">
+                    <option value="">Todas as Empresas</option>
+                    <% if (typeof vendasPorEmpresa !== 'undefined' && vendasPorEmpresa.length > 0) { %>
+                        <% vendasPorEmpresa.forEach(empresa => { %>
+                            <option value="<%= empresa.id %>"><%= empresa.nome %></option>
+                        <% }); %>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+        
+        <div class="client-purchases-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Empresa</th>
+                        <th>Total Comprado</th>
+                        <th>% do Cliente</th>
+                        <th>Último Pedido</th>
+                    </tr>
+                </thead>
+                <tbody id="clientTableBody">
+                    <% if (typeof comprasPorCliente !== 'undefined' && comprasPorCliente.length > 0) { %>
+                        <% comprasPorCliente.forEach(cliente => { %>
+                            <% if (cliente.empresas && cliente.empresas.length > 0) { %>
+                                <% cliente.empresas.forEach(empresa => { %>
+                                    <tr data-cliente-id="<%= cliente.clienteId %>" data-empresa-id="<%= empresa.empresaId %>">
+                                        <td><%= cliente.clienteNome %></td>
+                                        <td><%= empresa.empresaNome %></td>
+                                        <td>R$ <%= empresa.total.toFixed(2) %></td>
+                                        <td><%= empresa.percentual %>%</td>
+                                        <td><%= empresa.ultimoPedidoFormatado %></td>
+                                    </tr>
+                                <% }); %>
+                            <% } else { %>
+                                <tr data-cliente-id="<%= cliente.clienteId %>">
+                                    <td><%= cliente.clienteNome %></td>
+                                    <td colspan="4" class="no-data">Sem compras registradas</td>
+                                </tr>
+                            <% } %>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" class="no-data">Nenhum dado de compra disponível</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Distribuição de Vendas por Empresa -->
+    <section class="dashboard-section">
+        <div class="section-header">
+            <h2>Distribuição de Vendas por Empresa</h2>
+        </div>
+        
+        <div class="company-distribution">
+            <div class="chart-container pie-chart">
+                <canvas id="companyDistributionChart"></canvas>
+            </div>
+            <div class="distribution-details">
+                <% if (typeof vendasPorEmpresa !== 'undefined' && vendasPorEmpresa.length > 0) { %>
+                    <% vendasPorEmpresa.forEach((empresa, index) => { %>
+                        <div class="distribution-item">
+                            <div class="company-name">
+                                <% const colors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b']; %>
+                                <% const color = colors[index % colors.length]; %>
+                                <span class="color-indicator" style="background-color: <%= color %>;"></span>
+                                <span><%= empresa.nome %></span>
+                            </div>
+                            <div class="distribution-value"><%= empresa.percentual %>%</div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="distribution-item">
+                        <div class="company-name">
+                            <span class="color-indicator" style="background-color: #4e73df;"></span>
+                            <span>Sem dados</span>
+                        </div>
+                        <div class="distribution-value">0%</</div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</main>
+
+<style>
+    /* Estilo para os Cartões de Status de Pedidos */
+    .order-status-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .order-status-card {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid #edf2f7;
+    }
+    
+    .order-status-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+    
+    .status-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        font-size: 1.4em;
+    }
+    
+    .status-content {
+        flex: 1;
+    }
+    
+    .status-content h4 {
+        margin: 0 0 10px 0;
+        font-size: 1.1em;
+        color: #2d3748;
+    }
+    
+    .status-count {
+        font-size: 1.8em;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 5px 0;
+    }
+    
+    .status-description {
+        color: #718096;
+        font-size: 0.9em;
+        margin: 0 0 15px 0;
+    }
+    
+    .status-link {
+        color: #366cc9;
+        text-decoration: none;
+        font-size: 0.85em;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 10px;
+        border-top: 1px dashed #e2e8f0;
+    }
+    
+    .status-link i {
+        margin-left: 5px;
+        font-size: 0.8em;
+        transition: transform 0.2s;
+    }
+    
+    .status-link:hover i {
+        transform: translateX(3px);
+    }
+    
+    .reload-button {
+        display: flex;
+        align-items: center;
+    }
+    
+    .btn-sm {
+        padding: 5px 10px;
+        font-size: 0.85em;
+    }
+    
+    @media (max-width: 768px) {
+        .order-status-cards {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Debug info styling */
+    .debug-info {
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+    
+    #debugContent {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #f1f1f1;
+        border-radius: 4px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Dados para os gráficos (com fallbacks para evitar erros)
+    const empresas = <%- typeof vendasPorEmpresa !== 'undefined' ? JSON.stringify(vendasPorEmpresa.map(e => e.nome)) : '["Sem dados"]' %>;
+    const vendas = <%- typeof vendasPorEmpresa !== 'undefined' ? JSON.stringify(vendasPorEmpresa.map(e => e.totalVendas)) : '[0]' %>;
+    const percentuais = <%- typeof vendasPorEmpresa !== 'undefined' ? JSON.stringify(vendasPorEmpresa.map(e => e.percentual)) : '[100]' %>;
+    
+    // Cores para os gráficos
+    const backgroundColors = [
+        'rgba(78, 115, 223, 0.8)',
+        'rgba(28, 200, 138, 0.8)',
+        'rgba(54, 185, 204, 0.8)',
+        'rgba(246, 194, 62, 0.8)',
+        'rgba(231, 74, 59, 0.8)'
+    ];
+    
+    const borderColors = [
+        'rgba(78, 115, 223, 1)',
+        'rgba(28, 200, 138, 1)',
+        'rgba(54, 185, 204, 1)',
+        'rgba(246, 194, 62, 1)',
+        'rgba(231, 74, 59, 1)'
+    ];
+    
+    const pieColors = [
+        '#4e73df',
+        '#1cc88a',
+        '#36b9cc',
+        '#f6c23e',
+        '#e74a3b'
+    ];
+    
+    const pieHoverColors = [
+        '#2e59d9',
+        '#17a673',
+        '#2c9faf',
+        '#dda20a',
+        '#be2617'
+    ];
+
+    // Gráfico de vendas por empresa
+    const companySalesCtx = document.getElementById('companySalesChart');
+    let companySalesChart;
+    if (companySalesCtx) {
+        companySalesChart = new Chart(companySalesCtx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: empresas,
+                datasets: [{
+                    label: 'Vendas (R$)',
+                    data: vendas,
+                    backgroundColor: backgroundColors.slice(0, empresas.length),
+                    borderColor: borderColors.slice(0, empresas.length),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return 'R$ ' + value.toLocaleString('pt-BR');
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += 'R$ ' + context.parsed.y.toLocaleString('pt-BR');
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Gráfico de distribuição por empresa
+    const companyDistributionCtx = document.getElementById('companyDistributionChart');
+    let companyDistributionChart;
+    if (companyDistributionCtx) {
+        companyDistributionChart = new Chart(companyDistributionCtx.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: empresas,
+                datasets: [{
+                    data: percentuais,
+                    backgroundColor: pieColors.slice(0, empresas.length),
+                    hoverBackgroundColor: pieHoverColors.slice(0, empresas.length),
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Seletores de período
+    const periodButtons = document.querySelectorAll('.period-btn');
+    if (periodButtons.length) {
+        periodButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                periodButtons.forEach(btn => btn.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Atualizar dados com base no período selecionado
+                const period = this.getAttribute('data-period');
+                updateDataByPeriod(period);
+            });
+        });
+    }
+
+    // Função para atualizar dados com base no período selecionado
+    function updateDataByPeriod(period) {
+        // Aqui você faria uma chamada AJAX para buscar os dados do período específico
+        fetch(`/admin/dashboard-data?period=${period}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Atualizar vendas por empresa se o gráfico existir
+                    if (typeof companySalesChart !== 'undefined') {
+                        companySalesChart.data.labels = data.empresas.map(e => e.nome);
+                        companySalesChart.data.datasets[0].data = data.empresas.map(e => e.totalVendas);
+                        companySalesChart.update();
+                    }
+                    
+                    // Atualizar gráfico de distribuição se o gráfico existir
+                    if (typeof companyDistributionChart !== 'undefined') {
+                        companyDistributionChart.data.labels = data.empresas.map(e => e.nome);
+                        companyDistributionChart.data.datasets[0].data = data.empresas.map(e => e.percentual);
+                        companyDistributionChart.update();
+                    }
+                    
+                    // Atualizar cartões de estatísticas
+                    const statValueElements = document.querySelectorAll('.stat-value');
+                    if (statValueElements.length > 0) {
+                        statValueElements[0].textContent = `R$ ${data.totalVendas.toFixed(2)}`;
+                        if (statValueElements[1] && data.totalProdutos !== undefined) {
+                            statValueElements[1].textContent = data.totalProdutos;
+                        }
+                    }
+                    
+                    // Você pode continuar atualizando outros elementos da página conforme necessário
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar dados:', error);
+            });
+    }
+
+    // Filtros de cliente/empresa
+    const clientFilter = document.getElementById('clientFilter');
+    const companyFilter = document.getElementById('companyFilter');
+    
+    if (clientFilter) clientFilter.addEventListener('change', applyFilters);
+    if (companyFilter) companyFilter.addEventListener('change', applyFilters);
+    
+    function applyFilters() {
+        const clientId = clientFilter ? clientFilter.value : '';
+        const companyId = companyFilter ? companyFilter.value : '';
+        
+        const rows = document.querySelectorAll('#clientTableBody tr');
+        
+        rows.forEach(row => {
+            const rowClientId = row.getAttribute('data-cliente-id');
+            const rowEmpresaId = row.getAttribute('data-empresa-id');
+            
+            // Se ambos os filtros estão vazios, mostrar todas as linhas
+            if (!clientId && !companyId) {
+                row.style.display = '';
+                return;
+            }
+            
+            // Verificar se a linha corresponde aos filtros
+            const matchClient = !clientId || rowClientId === clientId;
+            const matchCompany = !companyId || rowEmpresaId === companyId;
+            
+            // Mostrar a linha apenas se corresponder aos filtros aplicados
+            row.style.display = matchClient && matchCompany ? '' : 'none';
+        });
+    }
+    
+    // Carregar contagem inicial de pedidos por status
+    atualizarStatusPedidos();
+    
+    // Atualizar estatísticas a cada 60 segundos
+    setInterval(atualizarEstatisticas, 60000);
+
+    // Log dashboard data for debugging
+    console.log('Dashboard Data:');
+    console.log('Total Vendas:', <%= typeof totalVendas !== 'undefined' ? totalVendas : 0 %>);
+    console.log('Produtos Vendidos:', <%= typeof contagem !== 'undefined' && contagem.produtos ? contagem.produtos : 0 %>);
+    console.log('Usuarios:', <%= typeof totalUsuarios !== 'undefined' ? totalUsuarios : 0 %>);
+    console.log('Crescimento:', <%= typeof crescimento !== 'undefined' ? crescimento : 0 %>);
+    
+    <% if (typeof pedidosPorStatus !== 'undefined') { %>
+        console.log('Pedidos por Status:', <%= JSON.stringify(pedidosPorStatus) %>);
+    <% } %>
+});
+
+// Função para atualizar estatísticas gerais
+function atualizarEstatisticas() {
+    fetch('/admin/dashboard-stats')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Atualizar valores nos cartões de estatísticas
+                const statValueElements = document.querySelectorAll('.stat-value');
+                if (statValueElements.length > 0) {
+                    statValueElements[0].textContent = `R$ ${data.totalVendas.toFixed(2)}`;
+                    if (statValueElements[1]) {
+                        statValueElements[1].textContent = data.totalProdutos;
+                    }
+                    if (statValueElements[2]) {
+                        statValueElements[2].textContent = data.totalUsuarios;
+                    }
+                    if (statValueElements[3]) {
+                        statValueElements[3].textContent = `${data.crescimento > 0 ? '+' : ''}${data.crescimento}%`;
+                    }
+                }
+                
+                // Atualizar contagem de pedidos
+                atualizarStatusPedidos();
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar estatísticas:', error);
+        });
+}
+
+// Função para atualizar contagem de pedidos por status
+function atualizarStatusPedidos() {
+    fetch('/admin/pedidos-por-status')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Atualizar contagem nos cartões de status
+                const statusCounts = data.statusCounts;
+                Object.keys(statusCounts).forEach(status => {
+                    const countElement = document.getElementById(`count-${status}`);
+                    if (countElement) {
+                        countElement.textContent = statusCounts[status];
+                    }
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao atualizar status de pedidos:', error);
+            document.querySelectorAll('.status-count').forEach(el => {
+                el.textContent = 'Erro ao carregar';
+            });
+        });
+}
+
+// Function to toggle debug info
+function toggleDebugInfo() {
+    const debugContent = document.getElementById('debugContent');
+    if (debugContent.style.display === 'none') {
+        debugContent.style.display = 'block';
+    } else {
+        debugContent.style.display = 'none';
+    }
+}
+</script>

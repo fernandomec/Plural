@@ -12,17 +12,20 @@
             <a href="/">Home</a>
             <a href="/lojas">Lojas</a>
             <a href="/contact">Contato</a>
-            <% if (!user) { %>
-                <a href="/login">Login</a>
-            <% } else { %>
+            <% if (typeof user !== 'undefined' && user) { %>
                 <a href="/user">Perfil</a>
                 <% if (user.role === 'ADMIN') { %>
                     <a href="/admin">Admin</a>
+                <% } else if (user.role === 'EDITOR') { %>
+                    <a href="/editor">Editor</a>
                 <% } %>
                 <a href="#" class="link-logout" title="Sair" onclick="logout(); return false;">
                     <span class="material-symbols-outlined icone-logout">logout</span>
                     <span class="texto-logout">Sair</span>
                 </a>
+            <% } else { %>
+                <a href="/login">Login</a>
+                <a href="/register">Cadastro</a>
             <% } %>
         </div>
     </nav>
@@ -39,16 +42,19 @@
         <a href="/">Home</a>
         <a href="/lojas">Lojas</a>
         <a href="/contact">Contato</a>
-        <% if (!user) { %>
-            <a href="/login">Login</a>
-        <% } else { %>
+        <% if (typeof user !== 'undefined' && user) { %>
             <a href="/user">Perfil</a>
             <% if (user.role === 'ADMIN') { %>
                 <a href="/admin">Admin</a>
+            <% } else if (user.role === 'EDITOR') { %>
+                <a href="/editor">Editor</a>
             <% } %>
             <a href="#" class="link-logout-sidebar" title="Sair" onclick="logout(); return false;">
                 <span class="material-symbols-outlined">logout</span> Sair
             </a>
+        <% } else { %>
+            <a href="/login">Login</a>
+            <a href="/register">Cadastro</a>
         <% } %>
     </div>
 </div>

@@ -89,18 +89,9 @@ const lojaRoutes = require('./routes/loja');
 const userRoutes = require('./routes/user');
 const orderRoutes = require('./routes/order');
 
-console.log('--- Carregando Rotas Admin ---');
-console.log('Tipo de adminRoutes:', typeof adminRoutes);
-console.log('adminRoutes é uma função (router)?', typeof adminRoutes === 'function');
-// Inspecionar se adminRoutes tem a estrutura esperada de um router Express
-if (typeof adminRoutes === 'function' && adminRoutes.stack) {
-    console.log('adminRoutes.stack (primeiras rotas):', adminRoutes.stack.slice(0, 2).map(layer => ({ name: layer.name, path: layer.route ? layer.route.path : undefined })));
-} else {
-    console.log('adminRoutes não parece ser um router Express válido ou está vazio.');
-}
+
 
 app.use('/', authenticationRoutes);
-console.log("Montando adminRoutes em /admin");
 app.use('/admin', adminRoutes);
 app.use('/', lojaRoutes);
 app.use('/', userRoutes);

@@ -1,0 +1,375 @@
+<main class="main-content">
+    <header class="content-header">
+        <div class="breadcrumb">
+            <span><a href="/admin">Admin</a> / </span><span><a href="/admin/produtos">Produtos</a> / </span><span class="current">Editar</span>
+        </div>
+    </header>
+
+    <section class="content-form-section">
+        <div class="form-header">
+            <h1>Editar Produto: <%= produto.name %></h1>
+            <div class="header-actions">
+                <a href="/produto/<%= produto.id %>" class="btn btn-secondary-outline" target="_blank"><i class="fas fa-eye"></i> Visualizar</a>
+                <button type="button" onclick="confirmDeleteProduto(<%= produto.id %>, '<%= produto.name %>')" class="btn btn-danger-outline"><i class="fas fa-trash-alt"></i> Excluir</button>
+            </div>
+        </div>
+        
+        <div id="formMessages"></div>
+        
+        <form id="productForm" class="product-form" enctype="multipart/form-data">
+            <input type="hidden" id="productId" name="productId" value="<%= produto.id %>">
+            
+            <div class="form-group">
+                <label for="name">Nome <span class="required">*</span></label>
+                <input type="text" id="name" name="name" value="<%= produto.name %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="empresaId">Empresa <span class="required">*</span></label>
+                <div class="custom-select-wrapper">
+                    <select id="empresaId" name="empresaId" required>
+                        <option value="">Selecione uma empresa</option>
+                        <% if (empresas && empresas.length > 0) { %>
+                            <% empresas.forEach(empresa => { %>
+                                <option value="<%= empresa.id %>" <%= produto.empresaId === empresa.id ? 'selected' : '' %>><%= empresa.razaoSocial %></option>
+                            <% }); %>
+                        <% } %>
+                    </select>
+                    <i class="fas fa-chevron-down select-arrow"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="categoryId">Categoria <span class="required">*</span></label>
+                <div class="custom-select-wrapper">
+                    <select id="categoryId" name="categoryId" required>
+                        <% if (categorias && categorias.length > 0) { %>
+                            <% categorias.forEach(categoria => { %>
+                                <option value="<%= categoria.id %>" <%= produto.categoryId === categoria.id ? 'selected' : '' %>><%= categoria.name %></option>
+                            <% }); %>
+                        <% } else { %>
+                            <option value="">Nenhuma categoria disponível</option>
+                        <% } %>
+                    </select>
+                    <i class="fas fa-chevron-down select-arrow"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="descricao">Descrição <span class="required">*</span></label>
+                <textarea id="descricao" name="descricao" rows="6" required><%= produto.descricao %></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="produtoImagem">Imagem</label>
+                <% if (produto.images && produto.images.length > 0) { %>
+                    <div id="currentImages" class="current-images">
+                        <% produto.images.forEach(imagem => { %>
+                            <div class="image-item">
+                                <img src="<%= imagem.endereco %>" alt="Imagem do produto">
+                                <button type="button" class="btn-remove-image" data-image-id="<%= imagem.id %>"><i class="fas fa-times"></i></button>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+                
+                <div class="file-dropzone" id="imageDropzone" <%= produto.images && produto.images.length > 0 ? 'style="display: none;"' : '' %>>
+                    <i class="fas fa-cloud-upload-alt dropzone-icon"></i>
+                    <p>Arraste uma nova imagem aqui ou clique para navegar</p>
+                    <span>Tamanho máximo: 5MB</span>
+                    <span>Suporta: image/png, image/jpeg, image/jpg</span>
+                    <input type="file" id="produtoImagem" name="produtoImagem" class="file-input-hidden" accept="image/png, image/jpeg, image/jpg">
+                </div>
+                
+                <div id="imagePreviewContainer" class="image-preview-container" style="display: none;">
+                    <img id="imagePreview" src="" alt="Preview da nova imagem">
+                    <button type="button" id="removeImage" class="btn-remove-image"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="preco">Preço <span class="required">*</span></label>
+                <input type="number" id="preco" name="preco" step="0.01" min="0" value="<%= produto.preco %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="boolPromo">Em Promoção?</label>
+                <div class="custom-select-wrapper">
+                    <select id="boolPromo" name="boolPromo">
+                        <option value="false" <%= !produto.boolPromo ? 'selected' : '' %>>Não</option>
+                        <option value="true" <%= produto.boolPromo ? 'selected' : '' %>>Sim</option>
+                    </select>
+                    <i class="fas fa-chevron-down select-arrow"></i>
+                </div>
+            </div>
+
+            <div class="form-group <%= !produto.boolPromo ? 'hidden-field' : '' %>" id="discount-form-group">
+                <label for="desconto">Desconto (%)</label>
+                <input type="number" id="desconto" name="desconto" step="1" min="0" max="100" value="<%= produto.desconto || '' %>">
+            </div>
+
+            <div class="form-group">
+                <label for="estoque">Estoque <span class="required">*</span></label>
+                <input type="number" id="estoque" name="estoque" min="0" value="<%= produto.estoque %>" required>
+            </div>
+
+            <div class="form-group">
+                <label for="codBarra">Cód. Barras</label>
+                <input type="text" id="codBarra" name="codBarra" value="<%= produto.codBarra || '' %>">
+            </div>
+
+            <div class="form-group">
+                <label>Criado em</label>
+                <input type="text" value="<%= new Date(produto.createdAt).toLocaleString('pt-BR') %>" readonly class="readonly-field">
+            </div>
+
+            <div class="form-group">
+                <label>Atualizado em</label>
+                <input type="text" value="<%= new Date(produto.updatedAt).toLocaleString('pt-BR') %>" readonly class="readonly-field">
+            </div>
+
+            <div class="form-actions">
+                <a href="/admin/produtos" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
+                <button type="submit" class="btn btn-primary btn-save"><i class="fas fa-save"></i> Salvar</button>
+            </div>
+        </form>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Controle de visibilidade do campo de desconto
+        const promoSelect = document.getElementById('boolPromo');
+        const discountGroup = document.getElementById('discount-form-group');
+
+        function toggleDiscountField() {
+            if (promoSelect.value === 'true') {
+                discountGroup.classList.remove('hidden-field');
+            } else {
+                discountGroup.classList.add('hidden-field');
+                document.getElementById('desconto').value = '';
+            }
+        }
+
+        // Event listener
+        promoSelect.addEventListener('change', toggleDiscountField);
+
+        // Configuração do Dropzone para upload de imagem
+        const dropzone = document.querySelector('.file-dropzone');
+        const fileInput = document.getElementById('produtoImagem');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const removeImageBtn = document.getElementById('removeImage');
+        const currentImagesContainer = document.getElementById('currentImages');
+
+        function handleFileSelect(file) {
+            if (file && file.type.match('image.*')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    dropzone.style.display = 'none';
+                    imagePreviewContainer.style.display = 'block';
+                    if (currentImagesContainer) {
+                        currentImagesContainer.style.display = 'none';
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        if (dropzone) {
+            dropzone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            dropzone.addEventListener('dragover', (event) => {
+                event.preventDefault();
+                dropzone.classList.add('dragging');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('dragging');
+            });
+
+            dropzone.addEventListener('drop', (event) => {
+                event.preventDefault();
+                dropzone.classList.remove('dragging');
+                const files = event.dataTransfer.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelect(files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (event) => {
+                if (event.target.files.length > 0) {
+                    handleFileSelect(event.target.files[0]);
+                }
+            });
+
+            removeImageBtn.addEventListener('click', () => {
+                fileInput.value = '';
+                imagePreview.src = '';
+                imagePreviewContainer.style.display = 'none';
+                dropzone.style.display = 'block';
+                if (currentImagesContainer) {
+                    currentImagesContainer.style.display = 'block';
+                }
+            });
+        }
+
+        // Botões para remover imagens existentes
+        const removeExistingBtns = document.querySelectorAll('.current-images .btn-remove-image');
+        removeExistingBtns.forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const imageId = this.getAttribute('data-image-id');
+                if (confirm('Tem certeza que deseja remover esta imagem?')) {
+                    try {
+                        const response = await fetch(`/admin/imagem/${imageId}`, { method: 'DELETE' });
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            // Remover o elemento da UI
+                            this.parentElement.remove();
+                            
+                            // Se não houver mais imagens, mostrar o dropzone
+                            if (document.querySelectorAll('.current-images .image-item').length === 0) {
+                                if (currentImagesContainer) currentImagesContainer.style.display = 'none';
+                                dropzone.style.display = 'block';
+                            }
+                            
+                            showMessage('Imagem removida com sucesso!', 'success');
+                        } else {
+                            showMessage(data.message || 'Erro ao remover imagem', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao remover imagem:', error);
+                        showMessage('Erro ao remover imagem', 'error');
+                    }
+                }
+            });
+        });
+
+        // Carregar categorias com base na empresa selecionada
+        const empresaSelect = document.getElementById('empresaId');
+        const categoriaSelect = document.getElementById('categoryId');
+        const currentCategoryId = <%= produto.categoryId %>;
+
+        empresaSelect.addEventListener('change', async function() {
+            const empresaId = this.value;
+            categoriaSelect.innerHTML = '<option value="">Carregando categorias...</option>';
+            
+            if (!empresaId) {
+                categoriaSelect.innerHTML = '<option value="">Primeiro selecione uma empresa</option>';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/admin/categorias/${empresaId}`);
+                const categorias = await response.json();
+                
+                if (categorias.length === 0) {
+                    categoriaSelect.innerHTML = '<option value="">Nenhuma categoria disponível para esta empresa</option>';
+                } else {
+                    categoriaSelect.innerHTML = '<option value="">Selecione uma categoria</option>';
+                    categorias.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat.id;
+                        option.textContent = cat.name;
+                        if (cat.id === currentCategoryId) {
+                            option.selected = true;
+                        }
+                        categoriaSelect.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar categorias:', error);
+                categoriaSelect.innerHTML = '<option value="">Erro ao carregar categorias</option>';
+            }
+        });
+
+        // Submissão do formulário via AJAX
+        const productForm = document.getElementById('productForm');
+        const formMessages = document.getElementById('formMessages');
+        const productId = document.getElementById('productId').value;
+
+        productForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validação do formulário
+            const requiredFields = productForm.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('error-field');
+                } else {
+                    field.classList.remove('error-field');
+                }
+            });
+            
+            if (!isValid) {
+                showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
+                return;
+            }
+            
+            // Enviar dados via AJAX
+            const formData = new FormData(productForm);
+            
+            try {
+                const response = await fetch(`/admin/produto/${productId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(result.message, 'success');
+                    // Redirecionar após 2 segundos
+                    setTimeout(() => {
+                        window.location.href = '/admin/produtos';
+                    }, 2000);
+                } else {
+                    showMessage(result.message || 'Erro ao atualizar produto', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao enviar formulário:', error);
+                showMessage('Erro ao enviar formulário. Verifique o console para detalhes.', 'error');
+            }
+        });
+        
+        function showMessage(message, type) {
+            formMessages.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            formMessages.scrollIntoView({ behavior: 'smooth' });
+            
+            // Limpar mensagem após 5 segundos
+            setTimeout(() => {
+                formMessages.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Função para excluir produto
+        window.confirmDeleteProduto = function(id, nome) {
+            if (confirm(`Tem certeza que deseja excluir o produto "${nome}"?`)) {
+                fetch(`/admin/produto/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Produto excluído com sucesso!');
+                        window.location.href = '/admin/produtos';
+                    } else {
+                        alert('Erro ao excluir produto: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao excluir produto:', error);
+                    alert('Erro ao excluir produto. Verifique o console para mais detalhes.');
+                });
+            }
+        };
+    });
+</script>

@@ -1,0 +1,119 @@
+<main class="main-content">
+    <header class="content-header">
+        <div class="breadcrumb">
+            <span><a href="/admin">Admin</a> / </span><span><a href="/admin/categorias">Categorias</a> / </span><span class="current">Criar nova</span>
+        </div>
+    </header>
+
+    <section class="content-form-section">
+        <div class="form-header">
+            <h1>Criar nova categoria</h1>
+        </div>
+        
+        <div id="formMessages"></div>
+        
+        <% if (!empresas || empresas.length === 0) { %>
+            <div class="alert alert-warning">
+                <p>Não é possível criar categorias pois não existem empresas cadastradas.</p>
+                <p>Por favor, <a href="/admin/empresa/criar" class="alert-link">crie uma empresa</a> primeiro.</p>
+            </div>
+        <% } else { %>
+            <form id="categoryForm" class="category-form">
+                <div class="form-group">
+                    <label for="name">Nome da Categoria <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="empresaId">Empresa <span class="required">*</span></label>
+                    <div class="custom-select-wrapper">
+                        <select id="empresaId" name="empresaId" required>
+                            <option value="">Selecione uma empresa</option>
+                            <% empresas.forEach(empresa => { %>
+                                <option value="<%= empresa.id %>"><%= empresa.razaoSocial %></option>
+                            <% }); %>
+                        </select>
+                        <i class="fas fa-chevron-down select-arrow"></i>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/admin/categorias" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
+                    <button type="submit" class="btn btn-primary btn-save"><i class="fas fa-save"></i> Salvar</button>
+                </div>
+            </form>
+        <% } %>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Submissão do formulário via AJAX
+        const categoryForm = document.getElementById('categoryForm');
+        const formMessages = document.getElementById('formMessages');
+
+        if (categoryForm) {
+            categoryForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Validação do formulário
+                const requiredFields = categoryForm.querySelectorAll('[required]');
+                let isValid = true;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('error-field');
+                    } else {
+                        field.classList.remove('error-field');
+                    }
+                });
+                
+                if (!isValid) {
+                    showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
+                    return;
+                }
+                
+                // Enviar dados via AJAX
+                const formData = new FormData(categoryForm);
+                
+                try {
+                    const response = await fetch('/admin/categoria', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(Object.fromEntries(formData))
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showMessage(result.message, 'success');
+                        // Redirecionar após 2 segundos
+                        setTimeout(() => {
+                            window.location.href = '/admin/categorias';
+                        }, 2000);
+                    } else {
+                        showMessage(result.message || 'Erro ao criar categoria', 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar formulário:', error);
+                    showMessage('Erro ao enviar formulário. Verifique o console para detalhes.', 'error');
+                }
+            });
+        }
+        
+        function showMessage(message, type) {
+            if (formMessages) {
+                formMessages.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+                formMessages.scrollIntoView({ behavior: 'smooth' });
+                
+                // Limpar mensagem após 5 segundos
+                setTimeout(() => {
+                    formMessages.innerHTML = '';
+                }, 5000);
+            }
+        }
+    });
+</script>

@@ -1,0 +1,704 @@
+<main class="main-content">
+    <header class="content-header">
+        <div class="breadcrumb">
+            <span><a href="/admin">Admin</a> / </span><span><a href="/admin/usuarios">Usuários</a> / </span><span class="current">Editar</span>
+        </div>
+    </header>
+
+    <section class="content-form-section">
+        <div class="form-header">
+            <h1>Editar Usuário: <%= usuario.username %></h1>
+            <div class="header-actions">
+                <button type="button" onclick="confirmDeleteUsuario(<%= usuario.id %>, '<%= usuario.username %>')" class="btn btn-danger-outline"><i class="fas fa-trash-alt"></i> Excluir</button>
+            </div>
+        </div>
+        
+        <div id="formMessages"></div>
+        
+        <div class="user-container">
+            <div class="user-info-grid">
+                <div class="user-info-card info-summary">
+                    <div class="user-info-header">
+                        <div class="user-avatar">
+                            <%= usuario.username.charAt(0).toUpperCase() %>
+                        </div>
+                        <div class="user-role-badge status-role status-<%= usuario.role.toLowerCase() %>">
+                            <%= usuario.role === 'ADMIN' ? 'Administrador' : (usuario.role === 'EDITOR' ? 'Editor' : 'Usuário') %>
+                        </div>
+                    </div>
+                    <div class="user-data">
+                        <h3><%= usuario.username %></h3>
+                        <p><a href="mailto:<%= usuario.email %>"><%= usuario.email %></a></p>
+                        <ul class="user-stats">
+                            <li>
+                                <span class="stat-icon"><i class="fas fa-shopping-cart"></i></span>
+                                <span class="stat-value"><%= usuario.pedidos ? usuario.pedidos.length : 0 %> pedidos</span>
+                            </li>
+                            <li>
+                                <span class="stat-icon"><i class="fas fa-calendar-alt"></i></span>
+                                <span class="stat-value">Membro desde <%= new Date(usuario.createdAt).toLocaleDateString('pt-BR') %></span>
+                            </li>
+                            <% if (usuario.pedidos && usuario.pedidos.length > 0) { %>
+                                <li>
+                                    <span class="stat-icon"><i class="fas fa-money-bill-wave"></i></span>
+                                    <span class="stat-value">Total: R$ <%= usuario.pedidos.reduce((acc, pedido) => acc + pedido.totalAmount, 0).toFixed(2) %></span>
+                                </li>
+                                <li>
+                                    <span class="stat-icon"><i class="fas fa-clock"></i></span>
+                                    <span class="stat-value">Último pedido: <%= new Date(usuario.pedidos[0].createdAt).toLocaleDateString('pt-BR') %></span>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="userForm" class="user-form">
+                <input type="hidden" id="userId" name="userId" value="<%= usuario.id %>">
+                
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-user"></i> Informações Básicas</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="username">Nome de Usuário <span class="required">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" id="username" name="username" value="<%= usuario.username %>" required class="input-styled">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">E-mail <span class="required">*</span></label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="email" name="email" value="<%= usuario.email %>" required class="input-styled">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="role">Função <span class="required">*</span></label>
+                            <div class="custom-select-wrapper">
+                                <select id="role" name="role" required class="input-styled">
+                                    <option value="USER" <%= usuario.role === 'USER' ? 'selected' : '' %>>Usuário</option>
+                                    <option value="EDITOR" <%= usuario.role === 'EDITOR' ? 'selected' : '' %>>Editor</option>
+                                    <option value="ADMIN" <%= usuario.role === 'ADMIN' ? 'selected' : '' %>>Administrador</option>
+                                </select>
+                                <i class="fas fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="tel">Telefone</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-phone input-icon"></i>
+                                <input type="text" id="tel" name="tel" value="<%= usuario.tel || '' %>" maxlength="15" placeholder="(XX) XXXXX-XXXX" class="input-styled">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-lock"></i> Segurança</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Nova Senha</label>
+                            <div class="password-input-wrapper">
+                                <div class="input-with-icon">
+                                    <i class="fas fa-key input-icon"></i>
+                                    <input type="password" id="password" name="password" class="input-styled">
+                                    <button type="button" class="toggle-password" onclick="togglePasswordVisibility('password')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="form-text">Deixe em branco para manter a senha atual. A nova senha deve ter no mínimo 8 caracteres.</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3 class="section-title"><i class="fas fa-map-marker-alt"></i> Endereço</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cep">CEP</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map-pin input-icon"></i>
+                                <input type="text" id="cep" name="cep" value="<%= usuario.cep || '' %>" maxlength="9" placeholder="XXXXX-XXX" class="input-styled">
+                                <button type="button" class="icon-button" id="buscarCep" title="Buscar CEP">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bairro">Bairro</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-map input-icon"></i>
+                                <input type="text" id="bairro" name="bairro" value="<%= usuario.bairro || '' %>" class="input-styled">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="endereco">Endereço</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-home input-icon"></i>
+                                <input type="text" id="endereco" name="endereco" value="<%= usuario.endereco || '' %>" class="input-styled">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="enderecoComplemento">Complemento</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-info-circle input-icon"></i>
+                                <input type="text" id="enderecoComplemento" name="enderecoComplemento" value="<%= usuario.enderecoComplemento || '' %>" class="input-styled">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/admin/usuarios" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Voltar</a>
+                    <button type="submit" class="btn btn-primary btn-save"><i class="fas fa-save"></i> Salvar</button>
+                </div>
+            </form>
+            
+            <% if (usuario.pedidos && usuario.pedidos.length > 0) { %>
+            <div class="user-pedidos">
+                <h3 class="section-title"><i class="fas fa-shopping-cart"></i> Últimos Pedidos</h3>
+                <table class="pedidos-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Data</th>
+                            <th>Empresa</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% usuario.pedidos.slice(0, 5).forEach(pedido => { %>
+                            <tr>
+                                <td>#<%= pedido.id %></td>
+                                <td><%= new Date(pedido.createdAt).toLocaleDateString('pt-BR') %></td>
+                                <td><%= pedido.empresa?.razaoSocial || 'N/A' %></td>
+                                <td>
+                                    <span class="status-pedido status-<%= pedido.status.toLowerCase() %>">
+                                        <%= formatPedidoStatus(pedido.status) %>
+                                    </span>
+                                </td>
+                                <td>R$ <%= pedido.totalAmount.toFixed(2) %></td>
+                                <td>
+                                    <a href="/admin/pedido/editar/<%= pedido.id %>" class="action-icon" title="Ver pedido">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+                <% if (usuario.pedidos.length > 5) { %>
+                    <div class="more-pedidos">
+                        <a href="/admin/pedidos?usuario=<%= usuario.id %>" class="btn btn-outline">
+                            Ver todos os pedidos <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+            <% } %>
+        </div>
+    </section>
+</main>
+
+<style>
+    .user-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .user-info-grid {
+        margin-bottom: 30px;
+    }
+    
+    .user-info-card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+    }
+    
+    .info-summary {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .user-info-header {
+        padding: 25px;
+        background: linear-gradient(135deg, #366cc9 0%, #4e73df 100%);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .user-avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background-color: #fff;
+        color: #366cc9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8em;
+        font-weight: bold;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .user-role-badge {
+        padding: 8px 16px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9em;
+        text-transform: uppercase;
+    }
+    
+    .user-data {
+        padding: 25px;
+    }
+    
+    .user-data h3 {
+        margin-top: 0;
+        font-size: 1.4em;
+        color: #333;
+    }
+    
+    .user-data p {
+        margin-top: 5px;
+        color: #666;
+    }
+    
+    .user-data a {
+        color: #366cc9;
+        text-decoration: none;
+    }
+    
+    .user-data a:hover {
+        text-decoration: underline;
+    }
+    
+    .user-stats {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0 0 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    
+    .user-stats li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background-color: #f0f4ff;
+        color: #366cc9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .stat-value {
+        color: #333;
+        font-weight: 500;
+    }
+    
+    /* Form Styling */
+    .user-form {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        margin-bottom: 30px;
+    }
+    
+    .form-section {
+        padding: 25px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .section-title {
+        font-size: 1.1em;
+        color: #333;
+        margin-top: 0;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .section-title i {
+        color: #366cc9;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .form-row:last-child {
+        margin-bottom: 0;
+    }
+    
+    .password-input-wrapper {
+        position: relative;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #666;
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .icon-button {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #366cc9;
+    }
+    
+    .pedidos-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .pedidos-table th, 
+    .pedidos-table td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .pedidos-table thead th {
+        background-color: #f1f3f5;
+        color: #495057;
+        font-weight: 600;
+    }
+    
+    .pedidos-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .more-pedidos {
+        margin-top: 20px;
+        text-align: center;
+    }
+    
+    .btn-outline {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: transparent;
+        color: #366cc9;
+        border: 1px solid #366cc9;
+        border-radius: 4px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-outline:hover {
+        background-color: #366cc9;
+        color: white;
+    }
+    
+    @media (max-width: 767px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .user-stats {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+    }
+    
+    .input-styled {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        box-sizing: border-box;
+        font-size: 0.95em;
+        color: #374151;
+        background-color: #fff;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    
+    .input-styled:focus {
+        outline: none;
+        border-color: #366cc9;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+    
+    .input-styled::placeholder {
+        color: #9ca3af;
+    }
+    
+    .password-input-wrapper {
+        position: relative;
+        width: 100%;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #6b7280;
+        padding: 5px;
+        z-index: 10;
+    }
+    
+    .toggle-password:hover {
+        color: #374151;
+    }
+    
+    .custom-select-wrapper .input-styled {
+        padding-right: 30px;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        cursor: pointer;
+    }
+</style>
+
+<script>
+    function formatPedidoStatus(status) {
+        const statusMap = {
+            'PEDIDO_RECEBIDO': 'Recebido',
+            'PAGAMENTO_APROVADO': 'Pgto. Aprovado',
+            'EM_SEPARACAO': 'Em Separação',
+            'ENVIADO_TRANSPORTADORA': 'Enviado',
+            'EM_TRANSPORTE': 'Em Transporte',
+            'EM_ROTA_DE_ENTREGA': 'Em Rota',
+            'ENTREGUE': 'Entregue',
+            'TROCA_DEVOLUCAO_SOLICITADA': 'Devolução Solicitada',
+            'TROCA_DEVOLUCAO_CONCLUIDA': 'Devolução Concluída'
+        };
+        
+        return statusMap[status] || status;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Máscaras para telefone e CEP
+        const telInput = document.getElementById('tel');
+        const cepInput = document.getElementById('cep');
+        
+        if (telInput) {
+            telInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+                value = value.replace(/\D/g, '');
+                
+                if (value.length > 0) {
+                    value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+                    value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+                }
+                
+                e.target.value = value;
+            });
+        }
+        
+        if (cepInput) {
+            cepInput.addEventListener('input', function(e) {
+                let value = e.target.value;
+                value = value.replace(/\D/g, '');
+                
+                if (value.length > 5) {
+                    value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+                }
+                
+                e.target.value = value;
+            });
+            
+            // Buscar endereço pelo CEP
+            document.getElementById('buscarCep').addEventListener('click', async function() {
+                const cep = cepInput.value.replace(/\D/g, '');
+                
+                if (cep.length === 8) {
+                    try {
+                        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+                        const data = await response.json();
+                        
+                        if (!data.erro) {
+                            document.getElementById('endereco').value = data.logradouro;
+                            document.getElementById('bairro').value = data.bairro;
+                            showMessage('Endereço preenchido com sucesso!', 'success');
+                        } else {
+                            showMessage('CEP não encontrado', 'error');
+                        }
+                    } catch (error) {
+                        console.error('Erro ao buscar CEP:', error);
+                        showMessage('Erro ao buscar CEP', 'error');
+                    }
+                } else {
+                    showMessage('CEP inválido', 'error');
+                }
+            });
+        }
+
+        // Toggle Password Visibility
+        window.togglePasswordVisibility = function(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        };
+
+        // Submissão do formulário via AJAX
+        const userForm = document.getElementById('userForm');
+        const formMessages = document.getElementById('formMessages');
+        const userId = document.getElementById('userId').value;
+
+        userForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Validação do formulário
+            const requiredFields = userForm.querySelectorAll('[required]');
+            let isValid = true;
+            
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('error-field');
+                } else {
+                    field.classList.remove('error-field');
+                }
+            });
+            
+            // Validar senha (somente se não estiver vazia)
+            const passwordField = document.getElementById('password');
+            if (passwordField.value && passwordField.value.length < 8) {
+                isValid = false;
+                passwordField.classList.add('error-field');
+                showMessage('A nova senha deve ter no mínimo 8 caracteres.', 'error');
+                return;
+            }
+            
+            if (!isValid) {
+                showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
+                return;
+            }
+            
+            // Enviar dados via AJAX
+            const formData = new FormData(userForm);
+            const formDataObj = Object.fromEntries(formData);
+            
+            try {
+                const response = await fetch(`/admin/usuario/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formDataObj)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(result.message || 'Usuário atualizado com sucesso!', 'success');
+                    // Redirecionar após 2 segundos
+                    setTimeout(() => {
+                        window.location.href = '/admin/usuarios';
+                    }, 2000);
+                } else {
+                    showMessage(result.message || 'Erro ao atualizar usuário', 'error');
+                }
+            } catch (error) {
+                console.error('Erro ao enviar formulário:', error);
+                showMessage('Erro ao enviar formulário. Verifique o console para detalhes.', 'error');
+            }
+        });
+        
+        function showMessage(message, type) {
+            formMessages.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            formMessages.scrollIntoView({ behavior: 'smooth' });
+            
+            // Limpar mensagem após 5 segundos
+            setTimeout(() => {
+                formMessages.innerHTML = '';
+            }, 5000);
+        }
+        
+        // Função para excluir usuário
+        window.confirmDeleteUsuario = function(id, username) {
+            if (confirm(`Tem certeza que deseja excluir o usuário "${username}"?\n\nEsta ação não pode ser desfeita e removerá todo o histórico deste usuário.`)) {
+                fetch(`/admin/usuario/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Usuário excluído com sucesso!');
+                        window.location.href = '/admin/usuarios';
+                    } else {
+                        alert('Erro ao excluir usuário: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao excluir usuário:', error);
+                    alert('Erro ao excluir usuário. Verifique o console para mais detalhes.');
+                });
+            }
+        };
+    });
+</script>
