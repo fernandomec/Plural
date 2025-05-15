@@ -60,22 +60,18 @@
             
             <table>
                 <tr id="subtotal-row">
-                    <td>Sub-total</td>
-                    <td data-subtotal>R$ <%= carrinho.total.toFixed(2) %></td>
+                    <td>Sub-total: <strong class="summary-value" data-subtotal>R$ <%= carrinho.total.toFixed(2) %></strong></td>
                 </tr>
                 <tr id="frete-row">
-                    <td>Frete</td>
-                    <td>Gratuito</td>
+                    <td>Frete: <strong class="summary-value">Gratuito</strong></td>
                 </tr>
                 <% if (carrinho.desconto > 0) { %>
                 <tr id="desconto-row">
-                    <td>Desconto</td>
-                    <td>R$ <%= carrinho.desconto.toFixed(2) %></td>
+                    <td>Desconto: <strong class="summary-value">R$ <%= carrinho.desconto.toFixed(2) %></strong></td>
                 </tr>
                 <% } %>
                 <tr class="total-row">
-                    <td>Total</td>
-                    <td class="total">R$ <%= carrinho.total.toFixed(2) %></td>
+                    <td>Total: <strong class="summary-value total">R$ <%= carrinho.total.toFixed(2) %></strong></td>
                 </tr>
             </table>
         
